@@ -94,19 +94,6 @@
 
 /*-----------------------------------------------------------*/
 
-/*
- * main_blinky() is used when mainCREATE_SIMPLE_BLINKY_DEMO_ONLY is set to 1.
- * main_full() is used when mainCREATE_SIMPLE_BLINKY_DEMO_ONLY is set to 0.
- */
-extern void main_blinky( void );
-extern void main_full( void );
-
-/*
- * Only the comprehensive demo uses application hook (callback) functions.  See
- * https://www.FreeRTOS.org/a00016.html for more information.
- */
-extern void vFullDemoTickHookFunction( void );
-extern void vFullDemoIdleFunction( void );
 
 /*
  * This demo uses heap_5.c, so start by defining some heap regions.  It is not
@@ -176,6 +163,8 @@ static int xKeyPressed = mainNO_KEY_PRESS_VALUE;
 
 /*-----------------------------------------------------------*/
 
+extern int main_project(void);
+
 int main( void )
 {
     /* This demo uses heap_5.c, so start by defining some heap regions.  heap_5
@@ -187,16 +176,6 @@ int main( void )
      * See http://www.FreeRTOS.org/trace for more information. */
 
     configASSERT( xTraceInitialize() == TRC_SUCCESS );
-
-    /* Start the trace recording - the recording is written to a file if
-     * configASSERT() is called. */
-    printf(
-        "Trace started.\r\n"
-        "The trace will be dumped to the file \"%s\" whenever a call to configASSERT()\r\n"
-        "fails or the \'%c\' key is pressed.\r\n"
-        "Note that the trace output uses the ring buffer mode, meaning that the output trace\r\n"
-        "will only be the most recent data able to fit within the trace recorder buffer.\r\n",
-        mainTRACE_FILE_NAME, mainOUTPUT_TRACE_KEY );
 
     configASSERT( xTraceEnable(TRC_START) == TRC_SUCCESS );
     
@@ -215,17 +194,8 @@ int main( void )
     /* Use the cores that are not used by the FreeRTOS tasks for the Windows thread. */
     SetThreadAffinityMask( xWindowsKeyboardInputThreadHandle, ~0x01u );
 
-    /* The mainCREATE_SIMPLE_BLINKY_DEMO_ONLY setting is described at the top
-     * of this file. */
-    #if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY == 1 )
-        {
-            main_blinky();
-        }
-    #else
-        {
-            main_full();
-        }
-    #endif /* if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY == 1 ) */
+
+    main_project();
 
     return 0;
 }
@@ -260,14 +230,6 @@ void vApplicationIdleHook( void )
      * that vApplicationIdleHook() is permitted to return to its calling function,
      * because it is the responsibility of the idle task to clean up memory
      * allocated by the kernel to any task that has since deleted itself. */
-
-    #if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY != 1 )
-        {
-            /* Call the idle task processing used by the full demo.  The simple
-             * blinky demo does not use the idle task hook. */
-            vFullDemoIdleFunction();
-        }
-    #endif
 }
 
 /*-----------------------------------------------------------*/
@@ -294,12 +256,6 @@ void vApplicationTickHook( void )
     * added here, but the tick hook is called from an interrupt context, so
     * code must not attempt to block, and only the interrupt safe FreeRTOS API
     * functions can be used (those that end in FromISR()). */
-
-    #if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY != 1 )
-        {
-            vFullDemoTickHookFunction();
-        }
-    #endif /* mainCREATE_SIMPLE_BLINKY_DEMO_ONLY */
 }
 /*-----------------------------------------------------------*/
 

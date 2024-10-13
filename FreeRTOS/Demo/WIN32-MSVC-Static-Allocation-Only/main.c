@@ -83,29 +83,11 @@ static void prvStartCheckTask( void );
 static void prvCheckTask( void *pvParameters );
 
 /*-----------------------------------------------------------*/
+extern int main_myproject(void);
 
 int main( void )
 {
-	/* This demo has configSUPPORT_STATIC_ALLOCATION set to 1 and
-	configSUPPORT_DYNAMIC_ALLOCATION set to 0, so the only standard temo tasks
-	created are the ones that only use static allocation.  This allow the
-	application to be built without including a FreeRTOS heap file (without one
-	of the heap files described on http://www.freertos.org/a00111.html */
-	vStartStaticallyAllocatedTasks();
-
-	/* Start a task that periodically inspects the tasks created by
-	vStartStaticallyAllocatedTasks() to ensure they are still running, and not
-	reporting any errors. */
-	prvStartCheckTask();
-
-	/* Start the scheduler so the demo tasks start to execute. */
-	vTaskStartScheduler();
-
-	/* vTaskStartScheduler() would only return if RAM required by the Idle and
-	Timer tasks could not be allocated.  As this demo uses statically allocated
-	RAM only, there are no allocations that could fail, and
-	vTaskStartScheduler() cannot return - so there is no need to put the normal
-	infinite loop after the call to vTaskStartScheduler(). */
+    main_myproject();
 
 	return 0;
 }

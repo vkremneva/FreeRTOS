@@ -18,6 +18,9 @@
     <Filter Include="FreeRTOS Source\Source\Portable">
       <UniqueIdentifier>{88f409e6-d396-4ac5-94bd-7a99c914be46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="myProject">
+      <UniqueIdentifier>{3bc4379b-7542-49fc-87a7-3149a492a02a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\list.c">
@@ -42,6 +45,9 @@
     <ClCompile Include="..\Common\Minimal\StaticAllocation.c" />
     <ClCompile Include="..\..\Source\stream_buffer.c">
       <Filter>FreeRTOS Source\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main_myproject.c">
+      <Filter>myProject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
