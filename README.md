@@ -60,10 +60,13 @@ Open the solution file WIN32.sln by double-clicking it.
 ### 5. Compile the Demo
 You can now compile the FreeRTOS demo in Visual Studio by building the solution.
 
-##Examples
-### Example 1: Files for this example can be found in the QueFiles branch.
-### Additional Examples: More examples are available in the exercise materials.
+# Examples
+### Example 1
+Files for this example can be found in the QueFiles branch.
 
-## Additional Tips
+### Additional Examples
+More examples are available in the exercise materials.
+
+# Additional Tips
 For Linux/macOS, if you encounter errors while running make, ensure all required dependencies are installed.
 For Windows, make sure that Visual Studio is fully updated and has all the necessary components selected for C++ development.
