@@ -3,10 +3,9 @@
 void vEventGeneratorTask(void *param) {
     QueueHandle_t xQueueEvents = (QueueHandle_t)param;
     int16_t sEventCode = 0;
-    int32_t lWaitTime = 0;
+    TickType_t xTicksToWait = 0;
     BaseType_t xStatusSend = 0;
     srand(time(NULL)); 
-
     for ( ;; ) {
         // TODO: randomize event codes
 //        sEventCode = rand() % 3 + 1;
@@ -18,9 +17,7 @@ void vEventGeneratorTask(void *param) {
             printf("Event Generation Task: Sending event code FAILURE: code is %d\n", sEventCode);
         }
 
-        // TODO: randomize wait time
-//        lWaitTime = rand() % 3000 + 500;
-        lWaitTime = 600;
-        vTaskDelay(pdMS_TO_TICKS(lWaitTime));
+        xTicksToWait = pdMS_TO_TICKS( rand() % 3000 + 500 );
+        vTaskDelay(xTicksToWait);
     }
 }
