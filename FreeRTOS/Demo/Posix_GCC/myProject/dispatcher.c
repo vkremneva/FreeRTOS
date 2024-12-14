@@ -2,9 +2,13 @@
 
 void vDispatcherTask(void *param) {
     QueueHandle_t xQueueEvents = (QueueHandle_t)param;
-    // TODO periodic lauch
+    TickType_t xLastWakeTime;
     BaseType_t xStatusReceive = 0, xStatusSend = 0;
     int16_t sEventCode = 0;
+
+    // get the current tick count
+    xLastWakeTime = xTaskGetTickCount();
+
     for ( ;; ) {
         xStatusReceive = xQueueReceive(xQueueEvents, &sEventCode, portMAX_DELAY);
 
@@ -25,5 +29,7 @@ void vDispatcherTask(void *param) {
         } else {
             printf("Dispatcher Task: Receiving the code FAILURE: queue error\n");
         }
+
+        vTaskDelayUntil( &xLastWakeTime, dispatcherDELAY );
     }
 }

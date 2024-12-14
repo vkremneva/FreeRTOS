@@ -8,6 +8,7 @@
 #include "queue.h"
 
 #define dispatcherPRIORITY 3
+#define dispatcherDELAY ( pdMS_TO_TICKS( 1000 ))
 
 extern QueueHandle_t xPoliceQueue;
 
