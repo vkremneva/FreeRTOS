@@ -20,7 +20,7 @@ void main_myproject(void)
 //    xFirefighters.xQueue = xQueueCreate(deptQUEUE_SIZE, deptQUEUE_ITEM_SIZE);
 //    xCorona.xQueue = xQueueCreate(deptQUEUE_SIZE, deptQUEUE_ITEM_SIZE);
 
-    xPoliceCountingSemaphore = xSemaphoreCreateCounting(deptPOLICE_CARS_TOTAL, 0);  
+    xPoliceCountingSemaphore = xSemaphoreCreateCounting( deptPOLICE_CARS_TOTAL, deptPOLICE_CARS_TOTAL );  
 
     xTaskCreate(vEventGeneratorTask, "Event Generator Task", configMINIMAL_STACK_SIZE, (void *)xQueueEvents, eventsPRIORITY, NULL);
     xTaskCreate(vDispatcherTask, "Dispatcher Task", configMINIMAL_STACK_SIZE, (void *)xQueueEvents, dispatcherPRIORITY, NULL);
