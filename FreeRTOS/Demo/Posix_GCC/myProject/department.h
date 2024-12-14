@@ -8,6 +8,10 @@
 #include "semphr.h"
 #include "queue.h"
 
+// TODO not so sure about 10
+#define deptQUEUE_SIZE 10
+#define deptQUEUE_ITEM_SIZE (sizeof(int16_t))
+
 #define deptPOLICE_ID 1
 #define deptAMBULANCE_ID 2
 #define deptFIREFIGHTERS_ID 3
@@ -18,6 +22,7 @@
 #define deptFIREFIGHTERS_CARS_TOTAL 2
 #define deptCORONA_CARS_TOTAL 4
 
+// TODO tweak
 #define deptPOLICE_PRIORITY 3
 #define deptAMBULANCE_PRIORITY 3
 #define deptFIREFIGHTERS_PRIORITY 3
@@ -31,9 +36,15 @@ typedef struct {
     size_t calls_total; 
 } department_t;
 
+extern department_t xPolice;
+extern QueueHandle_t xPoliceQueue;
+extern SemaphoreHandle_t xPoliceCountingSemaphore;
+
+void vUseResource(void *param);
+
 void vDeptPoliceTask(void *param);
-void vDeptAmbulanceTask(void *param);
-void vDeptFirefightersTask(void *param);
-void vDeptCoronaTask(void *param);
+// void vDeptAmbulanceTask(void *param);
+// void vDeptFirefightersTask(void *param);
+// void vDeptCoronaTask(void *param);
 
 #endif

@@ -1,62 +1,43 @@
 #include "department.h"
 
-void vDeptPoliceTask(void *param) {
-    QueueHandle_t xQueueEvents = (QueueHandle_t)param;
-    int xStatusReceive = 0;
-    int xMsgReceive = 0;
+department_t xPolice = { deptPOLICE_ID, deptPOLICE_CARS_TOTAL, deptPOLICE_CARS_TOTAL, 0, 0};
+QueueHandle_t xPoliceQueue = NULL;
+SemaphoreHandle_t xPoliceCountingSemaphore = NULL;
 
-    department_t xPolice;
-    xPolice.id = deptPOLICE_ID;
-    xPolice.calls_total = deptPOLICE_CARS_TOTAL;
-    xPolice.cars_available = xPolice.cars_total;
-    xPolice.cars_occupied = 0;
+void vUseResource(void *param) {
+    SemaphoreHandle_t xCountingSemaphore = (SemaphoreHandle_t)param;
+    BaseType_t xStatusGive = 0;
+
+    printf("Using Resource: STARTED\n");
+    vTaskDelay(pdMS_TO_TICKS(500));
+
+    xStatusGive = xSemaphoreGive(xCountingSemaphore);
+    if (xStatusGive == pdPASS) {
+        printf("Using Resource: FINISHED\n");
+    } else {
+        printf("Using Resource: semaphore ERROR\n");
+    }
+}
+
+void vDeptPoliceTask(void *param) {
+    BaseType_t xStatusReceive = 0, xStatusTake = 0;
+    int16_t sEventCode = 0;
 
     for ( ;; ) {
-        xStatusReceive = xQueueReceive(xQueueEvents, &xMsgReceive, portMAX_DELAY);
+        xStatusReceive = xQueueReceive(xPoliceQueue, &sEventCode, portMAX_DELAY);
 
         if (xStatusReceive == pdPASS) {
-            
-        } else if (xStatusReceive== errQUEUE_EMPTY) {
-            
+            printf("Police Task: Receiving the code SUCCESS: code is: %d\n", sEventCode);
+            xStatusTake = xSemaphoreTake(xPoliceCountingSemaphore, portMAX_DELAY);
+            if (xStatusTake == pdPASS) {
+                printf("Police Task: semaphore taking SUCCESS\n");
+                vUseResource((void *)xPoliceCountingSemaphore);
+            }
+        } else if (xStatusReceive == errQUEUE_EMPTY) {
+            printf("Police Task: Receiving the code FAILURE: queue is empty\n");
         } else {
-            printf("Control Unit Task: queue error\n");
+            // TODO to log
+            printf("Police Task: Receiving the code FAILURE: queue error\n");
         }
-    }
-}
-
-
-void vDeptAmbulanceTask(void *param) {
-
-    department_t xAmbulance;
-    xAmbulance.id = deptAMBULANCE_ID;
-    xAmbulance.calls_total = deptAMBULANCE_CARS_TOTAL;
-    xAmbulance.cars_available = xAmbulance.cars_total;
-    xAmbulance.cars_occupied = 0;
-
-    for ( ;; ) {
-    }
-}
-
-void vDeptFirefightersTask(void *param){
-
-    department_t xFirefighters;
-    xFirefighters.id = deptFIREFIGHTERS_ID;
-    xFirefighters.calls_total = deptFIREFIGHTERS_CARS_TOTAL;
-    xFirefighters.cars_available = xFirefighters.cars_total;
-    xFirefighters.cars_occupied = 0;
-
-    for ( ;; ) {
-    }
-}
-
-void vDeptCoronaTask(void *param) {
-
-    department_t xCorona;
-    xCorona.id = deptCORONA_ID;
-    xCorona.calls_total = deptCORONA_CARS_TOTAL;
-    xCorona.cars_available = xCorona.cars_total;
-    xCorona.cars_occupied = 0;
-
-    for ( ;; ) {
     }
 }
