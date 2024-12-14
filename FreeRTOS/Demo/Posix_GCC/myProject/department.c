@@ -9,14 +9,15 @@ void vUseResource(void *param) {
     BaseType_t xStatusGive = 0;
 
     printf("Using Resource: STARTED\n");
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay( deptUSING_RESOURCE_DELAY );
 
     xStatusGive = xSemaphoreGive(xCountingSemaphore);
     if (xStatusGive == pdPASS) {
-        printf("Using Resource: FINISHED\n");
+        printf("Using Resource: Semaphore giving SUCCESS\n");
     } else {
-        printf("Using Resource: semaphore ERROR\n");
+        printf("Using Resource: Semaphore giving ERROR\n");
     }
+    printf("Using Resource: FINISHED\n");
 }
 
 void vDeptPoliceTask(void *param) {
@@ -30,7 +31,7 @@ void vDeptPoliceTask(void *param) {
             printf("Police Task: Receiving the code SUCCESS: code is: %d\n", sEventCode);
             xStatusTake = xSemaphoreTake(xPoliceCountingSemaphore, portMAX_DELAY);
             if (xStatusTake == pdPASS) {
-                printf("Police Task: semaphore taking SUCCESS\n");
+                printf("Police Task: Semaphore taking SUCCESS\n");
                 vUseResource((void *)xPoliceCountingSemaphore);
             }
         } else if (xStatusReceive == errQUEUE_EMPTY) {

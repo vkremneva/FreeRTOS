@@ -28,6 +28,8 @@
 #define deptFIREFIGHTERS_PRIORITY 3
 #define deptCORONA_PRIORITY 3
 
+#define deptUSING_RESOURCE_DELAY ( pdMS_TO_TICKS( 500 ) ) 
+
 typedef struct {
     size_t id;
     size_t cars_total;
