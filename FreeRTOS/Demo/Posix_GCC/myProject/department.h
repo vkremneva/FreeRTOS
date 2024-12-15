@@ -28,7 +28,7 @@
 #define deptFIREFIGHTERS_PRIORITY 3
 #define deptCORONA_PRIORITY 3
 
-#define deptUSING_RESOURCE_DELAY ( pdMS_TO_TICKS( 500 ) ) 
+//#define deptUSING_RESOURCE_DELAY ( pdMS_TO_TICKS( 500 ) ) 
 
 typedef struct {
     size_t id;
@@ -42,11 +42,23 @@ extern department_t xPolice;
 extern QueueHandle_t xPoliceQueue;
 extern SemaphoreHandle_t xPoliceCountingSemaphore;
 
+extern department_t xAmbulance;
+extern QueueHandle_t xAmbulanceQueue;
+extern SemaphoreHandle_t xAmbulanceCountingSemaphore;
+
+extern department_t xFirefighters;
+extern QueueHandle_t xPFirefightersQueue;
+extern SemaphoreHandle_t xFirefightersCountingSemaphore;
+
+extern department_t xCorona;
+extern QueueHandle_t xCoronaQueue;
+extern SemaphoreHandle_t xCoronaCountingSemaphore;
+
 void vUseResource(void *param);
 
 void vDeptPoliceTask(void *param);
-// void vDeptAmbulanceTask(void *param);
-// void vDeptFirefightersTask(void *param);
-// void vDeptCoronaTask(void *param);
+void vDeptAmbulanceTask(void *param);
+void vDeptFirefightersTask(void *param);
+void vDeptCoronaTask(void *param);
 
 #endif
