@@ -15,7 +15,16 @@ void vDispatcherTask(void *param) {
         if (xStatusReceive == pdPASS) {
             printf("Dispatcher Task: Receiving the code SUCCESS: code is %d\n", sEventCode);
 
-            xStatusSend = xQueueSend(xPoliceQueue, &sEventCode, portMAX_DELAY);
+            if (sEventCode == dispPOLICE_ID) {
+                xStatusSend = xQueueSend(xPoliceQueue, &sEventCode, portMAX_DELAY);
+            } else if (sEventCode == dispAMBULANCE_ID) {
+                xStatusSend = xQueueSend(xAmbulanceQueue, &sEventCode, portMAX_DELAY);
+            } else if (sEventCode == dispFIREFIGHTERS_ID) {
+                xStatusSend = xQueueSend(xFirefightersQueue, &sEventCode, portMAX_DELAY);
+            } else {
+                printf("Dispatcher Task: ERROR no department with code: %d\n", sEventCode);
+            }
+
             if (xStatusSend == pdPASS) {
                 printf ("Dispatcher Task: Sending the code SUCCESS\n");
             } else if (xStatusSend == errQUEUE_FULL) {
