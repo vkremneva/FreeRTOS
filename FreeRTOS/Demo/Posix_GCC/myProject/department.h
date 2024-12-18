@@ -1,12 +1,16 @@
 #ifndef DEPARTMENT_H
 #define DEPARTMENT_H
 
-#include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
+
+#include "logging.h"
 
 // TODO not so sure about 10
 #define deptQUEUE_SIZE 10
@@ -28,37 +32,19 @@
 #define deptFIREFIGHTERS_PRIORITY 3
 #define deptCORONA_PRIORITY 3
 
-//#define deptUSING_RESOURCE_DELAY ( pdMS_TO_TICKS( 500 ) ) 
-
 typedef struct {
-    size_t id;
-    size_t cars_total;
-    size_t cars_available;
-    size_t cars_occupied;
-    size_t calls_total; 
+    char *name;
+    UBaseType_t id;
+    UBaseType_t priority;
+    UBaseType_t cars_total;
+    UBaseType_t cars_available;
+    UBaseType_t cars_occupied;
+    UBaseType_t calls_total; 
+    QueueHandle_t queue;
+    SemaphoreHandle_t countingSemaphore;
 } department_t;
 
-extern department_t xPolice;
-extern QueueHandle_t xPoliceQueue;
-extern SemaphoreHandle_t xPoliceCountingSemaphore;
-
-extern department_t xAmbulance;
-extern QueueHandle_t xAmbulanceQueue;
-extern SemaphoreHandle_t xAmbulanceCountingSemaphore;
-
-extern department_t xFirefighters;
-extern QueueHandle_t xPFirefightersQueue;
-extern SemaphoreHandle_t xFirefightersCountingSemaphore;
-
-extern department_t xCorona;
-extern QueueHandle_t xCoronaQueue;
-extern SemaphoreHandle_t xCoronaCountingSemaphore;
-
-void vUseResource(void *param);
-
-void vDeptPoliceTask(void *param);
-void vDeptAmbulanceTask(void *param);
-void vDeptFirefightersTask(void *param);
-void vDeptCoronaTask(void *param);
+void vUseResource(void *pvParameters);
+void vDepartmentTask(void *pvParameters);
 
 #endif
