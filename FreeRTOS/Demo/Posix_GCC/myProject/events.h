@@ -8,6 +8,8 @@
 #include "semphr.h"
 #include "queue.h"
 
+#include "logging.h"
+
 // TODO not so sure about 10
 #define eventsQUEUE_SIZE 10
 #define eventsQUEUE_ITEM_SIZE (sizeof(int16_t)) 
