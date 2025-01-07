@@ -32,6 +32,9 @@
 #define deptFIREFIGHTERS_PRIORITY 3
 #define deptCORONA_PRIORITY 3
 
+#define deptUSE_RESOURCE_MIN_TIME 500
+#define deptUSE_RESOURCE_MAX_TIME 3000
+
 typedef struct {
     char *name;
     UBaseType_t id;

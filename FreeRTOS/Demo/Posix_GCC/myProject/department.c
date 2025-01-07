@@ -4,7 +4,7 @@ void vUseResource(void *pvParameters) {
     // TODO log time and department name in the same log message
     SemaphoreHandle_t xCountingSemaphore = (SemaphoreHandle_t)pvParameters;
     BaseType_t xStatusGive = 0;
-    TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % 3000 + 500 );
+    TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % deptUSE_RESOURCE_MAX_TIME + deptUSE_RESOURCE_MIN_TIME );
 
     vTaskDelay( xTicksToWait );
 
