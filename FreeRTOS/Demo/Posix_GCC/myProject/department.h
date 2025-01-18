@@ -10,6 +10,7 @@
 #include "semphr.h"
 #include "queue.h"
 
+#include "utils.h"
 #include "logging.h"
 
 // TODO not so sure about 10
