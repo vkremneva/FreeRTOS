@@ -11,16 +11,8 @@ void vDispatcherTask(void *pvParameters) {
 
     for ( ;; ) {
         xStatusReceive = xQueueReceive(xQueueEvents, &sEventCode, portMAX_DELAY);
-
-        if (xCheckPdPASS(xStatusReceive, "Dispatcher Task", logRECEIVE_CODE)) {
-            for (int i = 0; i < DEPARTMENTS_AMOUNT; i++) { 
-                if (sEventCode == pxDepartments[i].id) {
-                    xStatusSend = xQueueSend(pxDepartments[i].queue, &sEventCode, portMAX_DELAY);
-                    break;
-                }
-            }
-
-            xCheckPdPASS(xStatusSend, "Dispatcher Task", logSEND_CODE);
+        if (xStatusReceive == pdPASS) {
+            xStatusSend = xQueueSend(pxDepartments[sEventCode].queue, &sEventCode, portMAX_DELAY);
         }
 
         vTaskDelayUntil( &xLastWakeTime, dispatcherDELAY );
