@@ -8,10 +8,10 @@ void logDepartmentUsage( char *pcDepartmentName, UBaseType_t ulDepartmentID, Tic
 
 void logNoResourceAvailable( char *pcDepartmentName ) {
     printf("%s: No resources available. ", pcDepartmentName);
-    printf("The event is remaining in the queue for further handling.");
+    printf("The event is remaining in the queue for further handling. ");
     printf("The task failed.\n");
 }
 
 void logQueueSendError(char *pcQueueName) {
-    printf("ERROR: Failed to send to %s\n", pcQueueName);
+    printf("ERROR: Failed to send to %s, it is full.\n", pcQueueName);
 }
