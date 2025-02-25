@@ -1,38 +1,30 @@
 #include "department.h"
 
-void vUseResource( void *pvParameters ) {
-    SemaphoreHandle_t xCountingSemaphore = (SemaphoreHandle_t)pvParameters;
-    BaseType_t xStatusGive = 0;
-    TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % deptUSE_RESOURCE_MAX_TIME + deptUSE_RESOURCE_MIN_TIME );
-
-    vTaskDelay( xTicksToWait );
-
-    xStatusGive = xSemaphoreGive( xCountingSemaphore );
-    xCheckPdPASS( xStatusGive, logUSE_RESOURCE, logGIVE_SEMAPHORE );
-}
-
 void vDepartmentTask( void *pvParameters ) {
     department_t *xDepartment = (department_t *)pvParameters;
-
-    BaseType_t xStatusReceive = 0, xStatusTake = 0;
+    BaseType_t xStatusReceive = 0, xStatusTake = 0, xStatusSend = 0;
+    TickType_t xUsageStartTime = 0;
     int16_t sEventCode = 0;
-    TickType_t xStartTime = 0, xEndTime = 0;
+    resource_request_t xRequest = { 0, 0 };
 
-        for ( ;; ) {
-        xStatusReceive = xQueueReceive( xDepartment->queue, &sEventCode, portMAX_DELAY );
-        if ( xCheckPdPASS(xStatusReceive, xDepartment->name, logRECEIVE_CODE )) {
+    for ( ;; ) {
+        xStatusReceive = xQueueReceive( xDepartment->queue, &sEventCode, portMAX_DELAY ); 
+        if (xStatusReceive == pdPASS) {
 
-            // start counting ticks after receiving the message 
-            xStartTime = xTaskGetTickCount();
-
+            xUsageStartTime = xTaskGetTickCount();
+            
             xStatusTake = xSemaphoreTake( xDepartment->countingSemaphore, portMAX_DELAY );
-            if (xCheckPdPASS( xStatusTake, xDepartment->name, logTAKE_SEMAPHORE) ) {
+            if (xStatusTake == pdPASS) {
+                
+                xRequest.department_name = xDepartment->name;
+                xRequest.event_code = sEventCode;
+                xRequest.usage_start_time = xUsageStartTime;
+                xRequest.xDepartmentSemaphore = xDepartment->countingSemaphore;
 
-                vUseResource( (void *)xDepartment->countingSemaphore );
+                xStatusSend = xQueueSend(xQueueResources, &xRequest, portMAX_DELAY);
+            } else {
+                logNoResourceAvailable( xDepartment->name );
             }
-            xEndTime = xTaskGetTickCount();
-
-            logDepartmentUsage( xDepartment->name, xDepartment->id, ( xEndTime - xStartTime ) );
-        }   
+        }
     }
 }

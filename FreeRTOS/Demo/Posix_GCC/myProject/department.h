@@ -10,8 +10,8 @@
 #include "semphr.h"
 #include "queue.h"
 
-#include "utils.h"
 #include "logging.h"
+#include "resource.h"
 
 // TODO not so sure about 10
 #define deptQUEUE_SIZE 10
@@ -33,9 +33,6 @@
 #define deptFIREFIGHTERS_PRIORITY 3
 #define deptCORONA_PRIORITY 3
 
-#define deptUSE_RESOURCE_MIN_TIME 500
-#define deptUSE_RESOURCE_MAX_TIME 3000
-
 typedef struct {
     char *name;
     UBaseType_t id;
@@ -48,7 +45,6 @@ typedef struct {
     SemaphoreHandle_t countingSemaphore;
 } department_t;
 
-void vUseResource(void *pvParameters);
 void vDepartmentTask(void *pvParameters);
 
 #endif
