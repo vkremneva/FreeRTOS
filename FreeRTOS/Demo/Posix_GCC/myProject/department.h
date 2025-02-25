@@ -9,29 +9,38 @@
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
+#include "event_groups.h"
 
 #include "logging.h"
 #include "resource.h"
 
 // TODO not so sure about 10
-#define deptQUEUE_SIZE 10
-#define deptQUEUE_ITEM_SIZE (sizeof(int16_t))
+#define deptQUEUE_SIZE              100
+#define deptQUEUE_ITEM_SIZE         (sizeof(int16_t))
+#define deptMAX_GROUP_WAIT_TIME     500
 
-#define deptPOLICE_ID 1
-#define deptAMBULANCE_ID 2
-#define deptFIREFIGHTERS_ID 3
-#define deptCORONA_ID 4
+#define deptPOLICE_ID               1
+#define deptAMBULANCE_ID            2
+#define deptFIREFIGHTERS_ID         3
+#define deptCORONA_ID               4
 
-#define deptPOLICE_CARS_TOTAL 3
-#define deptAMBULANCE_CARS_TOTAL 4
+#define deptPOLICE_CARS_TOTAL       3
+#define deptAMBULANCE_CARS_TOTAL    4
 #define deptFIREFIGHTERS_CARS_TOTAL 2
-#define deptCORONA_CARS_TOTAL 4
+#define deptCORONA_CARS_TOTAL       4
 
 // TODO tweak
-#define deptPOLICE_PRIORITY 3
-#define deptAMBULANCE_PRIORITY 3
-#define deptFIREFIGHTERS_PRIORITY 3
-#define deptCORONA_PRIORITY 3
+#define deptPOLICE_PRIORITY         3
+#define deptAMBULANCE_PRIORITY      3
+#define deptFIREFIGHTERS_PRIORITY   3
+#define deptCORONA_PRIORITY         3
+
+#define deptPOLICE_AVAILABLE       (1 << deptPOLICE_ID)
+#define deptAMBULANCE_AVAILABLE    (1 << deptAMBULANCE_ID)
+#define deptFIRE_AVAILABLE         (1 << deptFIREFIGHTERS_ID )
+#define deptCORONA_AVAILABLE       (1 << deptCORONA_ID)
+
+extern EventGroupHandle_t xDepartmentEventGroup;
 
 typedef struct {
     char *name;

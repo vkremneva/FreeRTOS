@@ -51,6 +51,18 @@ void main_myproject(void) {
     xTaskCreate( vEventGeneratorTask, "EvGenTask", configMINIMAL_STACK_SIZE, (void *)xQueueEvents, eventsPRIORITY, NULL );
     xTaskCreate( vDispatcherTask, "DisptTask", configMINIMAL_STACK_SIZE, (void *)xDepartments, dispatcherPRIORITY, NULL );
 
+    xDepartmentEventGroup = xEventGroupCreate();
+    if (xDepartmentEventGroup == NULL) {
+        printf("Creating event group FAILED.\n");
+    }
+
+    xEventGroupSetBits( xDepartmentEventGroup, 
+                       deptPOLICE_AVAILABLE | 
+                       deptAMBULANCE_AVAILABLE | 
+                       deptFIRE_AVAILABLE | 
+                       deptCORONA_AVAILABLE
+    );
+
     vTaskStartScheduler();
 
     for ( ;; )
