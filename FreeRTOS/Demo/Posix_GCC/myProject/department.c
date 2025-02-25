@@ -12,16 +12,24 @@ void vDepartmentTask( void *pvParameters ) {
         if (xStatusReceive == pdPASS) {
 
             xUsageStartTime = xTaskGetTickCount();
-            
-            xStatusTake = xSemaphoreTake( xDepartment->countingSemaphore, portMAX_DELAY );
-            if (xStatusTake == pdPASS) {
-                
-                xRequest.department_name = xDepartment->name;
-                xRequest.event_code = sEventCode;
-                xRequest.usage_start_time = xUsageStartTime;
-                xRequest.xDepartmentSemaphore = xDepartment->countingSemaphore;
 
-                xStatusSend = xQueueSend(xQueueResources, &xRequest, portMAX_DELAY);
+            xDepartment->cars_available = uxSemaphoreGetCount( xDepartment->countingSemaphore );
+            
+            if (xDepartment->cars_available != 0) {
+
+                xStatusTake = xSemaphoreTake( xDepartment->countingSemaphore, portMAX_DELAY );
+                if (xStatusTake == pdPASS) {
+                
+                    xRequest.department_name = xDepartment->name;
+                    xRequest.event_code = sEventCode;
+                    xRequest.usage_start_time = xUsageStartTime;
+                    xRequest.xDepartmentSemaphore = xDepartment->countingSemaphore;
+
+                    xStatusSend = xQueueSend(xQueueResources, &xRequest, portMAX_DELAY);
+                    if (xStatusSend != pdPASS) {
+                        logQueueSendError("xQueueResources");
+                    }
+                }
             } else {
                 logNoResourceAvailable( xDepartment->name );
             }
