@@ -12,4 +12,6 @@
 void logDepartmentUsage( char *pcDepartmentName, UBaseType_t ulDepartmentID, TickType_t xUseTime );
 void logNoResourceAvailable( char *pcDepartmentName );
 
+void logQueueSendError(char *pcQueueName);
+
 #endif
