@@ -14,7 +14,8 @@ void vResourceTask( void *pvParameters ) {
         if (xStatusReceive == pdPASS) {
 
             TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % resourceUSE_MAX_TIME + resourceUSE_MIN_TIME );
-            printf("Resource Task: Received request from the %s, processing in %d ticks\n", xRequest.department_name, xTicksToWait);
+            printf("%s", pcTaskGetTaskName(NULL));
+            printf(": Received request from the %s, processing in %d ticks\n", xRequest.department_name, xTicksToWait);
             vTaskDelay( xTicksToWait );
 
             xStatusGive = xSemaphoreGive( xRequest.xDepartmentSemaphore );
