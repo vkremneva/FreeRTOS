@@ -42,12 +42,14 @@ void main_myproject(void) {
     xQueueResources = xQueueCreate( resourceQUEUE_SIZE, resourceQUEUE_ITEM_SIZE );
 
     BaseType_t RESOURCES_AMOUNT = xGetResourcesAmount(xDepartments);
+    char sResourceTaskName[30];
     for (int i = 0; i < RESOURCES_AMOUNT; ++i) {
-        xTaskCreate( vResourceTask, "Resource Task", configMINIMAL_STACK_SIZE, NULL, resourceTASK_PRIORITY, NULL );
+        snprintf(sResourceTaskName, sizeof(sResourceTaskName), "ResTask %d", i + 1);
+        xTaskCreate( vResourceTask, sResourceTaskName, configMINIMAL_STACK_SIZE, NULL, resourceTASK_PRIORITY, NULL );
     }
 
-    xTaskCreate( vEventGeneratorTask, "Event Generator Task", configMINIMAL_STACK_SIZE, (void *)xQueueEvents, eventsPRIORITY, NULL );
-    xTaskCreate( vDispatcherTask, "Dispatcher Task", configMINIMAL_STACK_SIZE, (void *)xDepartments, dispatcherPRIORITY, NULL );
+    xTaskCreate( vEventGeneratorTask, "EvGenTask", configMINIMAL_STACK_SIZE, (void *)xQueueEvents, eventsPRIORITY, NULL );
+    xTaskCreate( vDispatcherTask, "DisptTask", configMINIMAL_STACK_SIZE, (void *)xDepartments, dispatcherPRIORITY, NULL );
 
     vTaskStartScheduler();
 
