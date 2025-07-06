@@ -5,7 +5,7 @@ EventGroupHandle_t xDepartmentEventGroup = NULL;
 void vDepartmentTask( void *pvParameters ) {
     department_t *xDepartment = (department_t *)pvParameters;
     BaseType_t xStatusReceive = 0, xStatusTake = 0, xStatusSend = 0;
-    TickType_t xUsageStartTime = 0;
+    TickType_t xUsageStartTime = 0, xTimestamp = 0;
     int16_t sEventCode = 0;
     EventBits_t xEventGroupValue = 0;
     resource_request_t xRequest = { NULL, 0, 0, NULL };
@@ -19,6 +19,8 @@ void vDepartmentTask( void *pvParameters ) {
     for ( ;; ) {
         xStatusReceive = xQueueReceive( xDepartment->queue, &sEventCode, portMAX_DELAY ); 
         if (xStatusReceive == pdPASS) {
+            xTimestamp = xTaskGetTickCount();
+            addToCSVLog(&log, xTimestamp, sEventCode, xDepartment->name);
 
             xUsageStartTime = xTaskGetTickCount();
 

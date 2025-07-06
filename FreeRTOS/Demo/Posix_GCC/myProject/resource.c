@@ -5,13 +5,15 @@ SemaphoreHandle_t xResourcesSemaphore;
 
 void vResourceTask( void *pvParameters ) {
     resource_request_t xRequest;
-    TickType_t xUsageEndTime = 0;
+    TickType_t xUsageEndTime = 0, xTimestamp = 0;
 
     BaseType_t xStatusReceive = 0, xStatusGive = 0;
 
     for ( ;; ) {
         xStatusReceive = xQueueReceive( xQueueResources, &xRequest, portMAX_DELAY );
         if (xStatusReceive == pdPASS) {
+            xTimestamp = xTaskGetTickCount();
+            addToCSVLog(&log, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
 
             TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % resourceUSE_MAX_TIME + resourceUSE_MIN_TIME );
             printf("%s", pcTaskGetTaskName(NULL));
@@ -26,6 +28,8 @@ void vResourceTask( void *pvParameters ) {
                                     ( xUsageEndTime - xRequest.usage_start_time ) 
                 );
             }
+            xTimestamp = xTaskGetTickCount();
+            addToCSVLog(&log, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
         }
     }
 }

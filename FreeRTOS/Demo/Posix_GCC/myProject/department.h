@@ -56,4 +56,6 @@ typedef struct {
 
 void vDepartmentTask(void *pvParameters);
 
+extern struct logCSV log;
+
 #endif
