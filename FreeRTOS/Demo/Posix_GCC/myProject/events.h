@@ -25,4 +25,6 @@
 extern QueueHandle_t xQueueEvents;
 void vEventGeneratorTask(void *pvParameters);
 
+extern struct logCSV log;
+
 #endif
