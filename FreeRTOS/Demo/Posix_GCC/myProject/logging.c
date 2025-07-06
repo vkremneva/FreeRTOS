@@ -13,7 +13,7 @@ void addToCSVLog(struct logCSV *log, TickType_t timestamp, int16_t eventcode, ch
         fprintf(file, "Time,Event Code,Entity\n");
         if(file != NULL) {
             for (int i = 0; i < log->ind; ++i) {
-                fprintf(file, "%lu,%d,%s\n", log->log[i].timestamp, log->log[i].eventcode, log->log[index].msg);
+                fprintf(file, "%lu,%d,%s\n", log->log[i].timestamp, log->log[i].eventcode, log->log[i].msg);
             }
             fclose(file);
             printf("**********logCSV: DATA GATHERED.**********\n");
