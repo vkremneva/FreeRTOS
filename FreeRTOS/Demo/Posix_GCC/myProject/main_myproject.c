@@ -13,10 +13,14 @@
 // because I dont know how to send this to vDispatcherTask
 const int DEPARTMENTS_AMOUNT = 4;
 
+struct logCSV log;
+
 BaseType_t xGetResourcesAmount( department_t *xDepartments);
 
 void main_myproject(void) {
     srand(time(NULL));
+
+    log.ind = 0;
 
     department_t xDepartments[] = {
         {"Null", 0, 1, 0, 0, 0, 0, NULL, NULL},
