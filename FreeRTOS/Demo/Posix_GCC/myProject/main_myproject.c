@@ -48,7 +48,7 @@ void main_myproject(void) {
     BaseType_t RESOURCES_AMOUNT = xGetResourcesAmount(xDepartments);
     char sResourceTaskName[30];
     for (int i = 0; i < RESOURCES_AMOUNT; ++i) {
-        snprintf(sResourceTaskName, sizeof(sResourceTaskName), "ResTask %d", i + 1);
+        snprintf(sResourceTaskName, sizeof(sResourceTaskName), "ResTask %02d", i + 1);
         xTaskCreate( vResourceTask, sResourceTaskName, configMINIMAL_STACK_SIZE, NULL, resourceTASK_PRIORITY, NULL );
     }
 
