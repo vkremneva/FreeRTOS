@@ -10,11 +10,13 @@ void vEventGeneratorTask(void *pvParameters) {
     event_t xEvent = { 0, false };
 
     for ( ;; ) {
-        xEvent.code = rand() % eventsMAX_EVENT_CODE + eventsMIN_EVENT_CODE;
+        xEvent.ucCode = rand() % eventsMAX_EVENT_CODE + eventsMIN_EVENT_CODE;
         xStatusSend = xQueueSend(xQueueEvents, &xEvent, portMAX_DELAY);
-        
+
+        /* For debug puposes only. */
         xTimestamp = xTaskGetTickCount();
-        addToCSVLog(&log_to_csv, xTimestamp, xEvent.code, "Event Generator Task");
+        addToCSVLog(&log_to_csv, xTimestamp, xEvent.ucCode, "Event Generator Task");
+        /* End of debug purposes. */
 
         xTicksToWait = pdMS_TO_TICKS( rand() % eventMAX_WAIT_TIME + eventsMIN_WAIT_TIME );
         vTaskDelay(xTicksToWait);

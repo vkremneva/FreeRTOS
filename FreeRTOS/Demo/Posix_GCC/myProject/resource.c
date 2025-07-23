@@ -12,24 +12,28 @@ void vResourceTask( void *pvParameters ) {
     for ( ;; ) {
         xStatusReceive = xQueueReceive( xQueueResources, &xRequest, portMAX_DELAY );
         if (xStatusReceive == pdPASS) {
+            /* For debug puposes only. */
             xTimestamp = xTaskGetTickCount();
-            addToCSVLog(&log_to_csv, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
+            addToCSVLog(&log_to_csv, xTimestamp, xRequest.ucEventCode, pcTaskGetTaskName(NULL));
+            /* End of debug purposes. */
 
             TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % resourceUSE_MAX_TIME + resourceUSE_MIN_TIME );
             printf("%s", pcTaskGetTaskName(NULL));
-            printf(": Received request from the %s, processing in %d ticks\n", xRequest.department_name, xTicksToWait);
+            printf(": Received request from the %s, processing in %d ticks\n", xRequest.psDepartmentName, xTicksToWait);
             vTaskDelay( xTicksToWait );
 
-            xStatusGive = xSemaphoreGive( xRequest.xDepartmentSemaphore );
+            xStatusGive = xSemaphoreGive( xRequest.pxDepartmentSemaphore );
             if (xStatusGive == pdPASS) {
                 xUsageEndTime = xTaskGetTickCount(); 
-                logDepartmentUsage( xRequest.department_name, 
-                                    xRequest.event_code, 
-                                    ( xUsageEndTime - xRequest.usage_start_time ) 
+                vLogDepartmentUsage( xRequest.psDepartmentName, 
+                                     xRequest.ucEventCode, 
+                                    ( xUsageEndTime - xRequest.xUsageStartTime ) 
                 );
             }
             xTimestamp = xTaskGetTickCount();
-            addToCSVLog(&log_to_csv, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
+
+            /* For debug puposes only. */
+            addToCSVLog(&log_to_csv, xTimestamp, xRequest.ucEventCode, pcTaskGetTaskName(NULL));
         }
     }
 }

@@ -1,5 +1,25 @@
 #include "logging.h"
 
+void vLogDepartmentUsage( char *pcDepartmentName, UBaseType_t ulDepartmentID, TickType_t xUseTime ) {
+    printf("%s: Receiving the event code %lu. ", pcDepartmentName, ulDepartmentID);
+    printf("A free resource was allocated. ");
+    printf("Task lasted %lu. The task was completed.\n", xUseTime);
+}
+/*-----------------------------------------------------------*/
+
+void vLogNoResourceAvailable( char *pcDepartmentName ) {
+    printf("%s: No resources available. ", pcDepartmentName);
+    printf("The event is remaining in the queue for further handling. ");
+    printf("The task failed.\n");
+}
+/*-----------------------------------------------------------*/
+
+void vLogQueueSendError(char *pcQueueName) {
+    printf("ERROR: Failed to send to %s, it is full.\n", pcQueueName);
+}
+/*-----------------------------------------------------------*/
+
+/* For debug puposes only. */
 void addToCSVLog(struct logCSV *log, TickType_t timestamp, int16_t eventcode, char* msg) {
     int index = atomic_fetch_add(&log->ind, 1);
     log->log[index].timestamp = timestamp;
@@ -22,19 +42,4 @@ void addToCSVLog(struct logCSV *log, TickType_t timestamp, int16_t eventcode, ch
         }
     }
 }
-
-void logDepartmentUsage( char *pcDepartmentName, UBaseType_t ulDepartmentID, TickType_t xUseTime ) {
-    printf("%s: Receiving the event code %lu. ", pcDepartmentName, ulDepartmentID);
-    printf("A free resource was allocated. ");
-    printf("Task lasted %lu. The task was completed.\n", xUseTime);
-}
-
-void logNoResourceAvailable( char *pcDepartmentName ) {
-    printf("%s: No resources available. ", pcDepartmentName);
-    printf("The event is remaining in the queue for further handling. ");
-    printf("The task failed.\n");
-}
-
-void logQueueSendError(char *pcQueueName) {
-    printf("ERROR: Failed to send to %s, it is full.\n", pcQueueName);
-}
+/* End of debug purposes. */

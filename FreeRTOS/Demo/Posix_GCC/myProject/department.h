@@ -40,27 +40,29 @@
 #define deptFIRE_AVAILABLE         (1 << deptFIREFIGHTERS_ID )
 #define deptCORONA_AVAILABLE       (1 << deptCORONA_ID)
 
-extern QueueHandle_t xQueueEvents;
-extern EventGroupHandle_t xDepartmentEventGroup;
-extern UBaseType_t xDepartmentsAmount;
-extern UBaseType_t xResourcesAmount;
-extern UBaseType_t xIndByPriority[deptMAX_DEPARTMENTS_AMOUNT];
+extern QueueHandle_t        xQueueEvents;
+extern EventGroupHandle_t   xDepartmentEventGroup;
+
+extern UBaseType_t uxDepartmentsAmount;
+extern UBaseType_t uxResourcesAmount;
+extern UBaseType_t uxDeptPriorityOrder[deptMAX_DEPARTMENTS_AMOUNT];
+
+/* For debug puposes only. */
 extern struct logCSV log_to_csv;
 
 typedef struct {
-    char *name;
-    UBaseType_t id;
-    UBaseType_t priority;
-    UBaseType_t cars_total;
-    UBaseType_t cars_available;
-    UBaseType_t cars_occupied;
-    UBaseType_t calls_total; 
-    UBaseType_t bits_available;
-    QueueHandle_t queue;
-    SemaphoreHandle_t countingSemaphore;
+    char                *psName;
+    uint8_t             ucID;
+    uint8_t             ucPriority;
+    UBaseType_t         uxCarsTotal;
+    UBaseType_t         uxCarsAvailable;
+    UBaseType_t         uxCallsTotal; 
+    UBaseType_t         bits_available;
+    QueueHandle_t       xQueue;
+    SemaphoreHandle_t   xCountSemaphore;
 } department_t;
 
-department_t* xInitDepartments();
+department_t* pxInitDepartments();
 void vDepartmentTask(void *pvParameters);
 
 #endif 

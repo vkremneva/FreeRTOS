@@ -10,25 +10,27 @@
 
 #include "logging.h"
 
-#define eventsQUEUE_SIZE 10
-#define eventsQUEUE_ITEM_SIZE (sizeof(event_t)) 
+#define eventsQUEUE_SIZE        10
+#define eventsQUEUE_ITEM_SIZE   (sizeof(event_t)) 
 
-#define eventsPRIORITY 5
+#define eventsPRIORITY          5
 
-#define eventsMIN_WAIT_TIME 200
-#define eventMAX_WAIT_TIME 800
+#define eventsMIN_WAIT_TIME     200
+#define eventMAX_WAIT_TIME      800
 
-#define eventsMAX_EVENT_CODE 3
-#define eventsMIN_EVENT_CODE 1
+#define eventsMAX_EVENT_CODE    3
+#define eventsMIN_EVENT_CODE    1
 
 typedef struct {
-  int16_t code;
-  bool rejected;
+    uint8_t   ucCode;
+    bool      xRejected;
 } event_t;
 
 extern QueueHandle_t xQueueEvents;
-void vEventGeneratorTask(void *pvParameters);
 
+/* For debug puposes only. */
 extern struct logCSV log_to_csv;
+
+void vEventGeneratorTask(void *pvParameters);
 
 #endif
