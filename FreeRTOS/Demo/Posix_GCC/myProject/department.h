@@ -11,13 +11,14 @@
 #include "queue.h"
 #include "event_groups.h"
 
+#include "events.h"
 #include "logging.h"
 #include "resource.h"
 
-// TODO not so sure about 10
 #define deptQUEUE_SIZE              100
-#define deptQUEUE_ITEM_SIZE         (sizeof(int16_t))
+#define deptQUEUE_ITEM_SIZE         (sizeof(event_t))
 #define deptMAX_GROUP_WAIT_TIME     500
+#define deptMAX_DEPARTMENTS_AMOUNT  10
 
 #define deptPOLICE_ID               1
 #define deptAMBULANCE_ID            2
@@ -29,18 +30,22 @@
 #define deptFIREFIGHTERS_CARS_TOTAL 2
 #define deptCORONA_CARS_TOTAL       4
 
-// TODO tweak
 #define deptPOLICE_PRIORITY         3
-#define deptAMBULANCE_PRIORITY      3
-#define deptFIREFIGHTERS_PRIORITY   3
-#define deptCORONA_PRIORITY         3
+#define deptAMBULANCE_PRIORITY      4
+#define deptFIREFIGHTERS_PRIORITY   4
+#define deptCORONA_PRIORITY         2
 
 #define deptPOLICE_AVAILABLE       (1 << deptPOLICE_ID)
 #define deptAMBULANCE_AVAILABLE    (1 << deptAMBULANCE_ID)
 #define deptFIRE_AVAILABLE         (1 << deptFIREFIGHTERS_ID )
 #define deptCORONA_AVAILABLE       (1 << deptCORONA_ID)
 
+extern QueueHandle_t xQueueEvents;
 extern EventGroupHandle_t xDepartmentEventGroup;
+extern UBaseType_t xDepartmentsAmount;
+extern UBaseType_t xResourcesAmount;
+extern UBaseType_t xIndByPriority[deptMAX_DEPARTMENTS_AMOUNT];
+extern struct logCSV log_to_csv;
 
 typedef struct {
     char *name;
@@ -50,12 +55,12 @@ typedef struct {
     UBaseType_t cars_available;
     UBaseType_t cars_occupied;
     UBaseType_t calls_total; 
+    UBaseType_t bits_available;
     QueueHandle_t queue;
     SemaphoreHandle_t countingSemaphore;
 } department_t;
 
+department_t* xInitDepartments();
 void vDepartmentTask(void *pvParameters);
 
-extern struct logCSV log;
-
-#endif
+#endif 
