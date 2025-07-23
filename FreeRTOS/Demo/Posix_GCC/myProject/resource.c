@@ -13,7 +13,7 @@ void vResourceTask( void *pvParameters ) {
         xStatusReceive = xQueueReceive( xQueueResources, &xRequest, portMAX_DELAY );
         if (xStatusReceive == pdPASS) {
             xTimestamp = xTaskGetTickCount();
-            addToCSVLog(&log, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
+            addToCSVLog(&log_to_csv, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
 
             TickType_t xTicksToWait = pdMS_TO_TICKS( rand() % resourceUSE_MAX_TIME + resourceUSE_MIN_TIME );
             printf("%s", pcTaskGetTaskName(NULL));
@@ -29,7 +29,7 @@ void vResourceTask( void *pvParameters ) {
                 );
             }
             xTimestamp = xTaskGetTickCount();
-            addToCSVLog(&log, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
+            addToCSVLog(&log_to_csv, xTimestamp, xRequest.event_code, pcTaskGetTaskName(NULL));
         }
     }
 }
