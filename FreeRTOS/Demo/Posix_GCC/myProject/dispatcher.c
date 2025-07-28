@@ -25,7 +25,7 @@ void vDispatcherTask(void *pvParameters) {
             } else {
                 xEventGroupValue = xEventGroupWaitBits(
                     xDepartmentEventGroup,
-                    uxBitsAvailable,
+                    uxBitsAvailableAll,
                     pdFALSE,
                     pdFALSE,
                     deptMAX_GROUP_WAIT_TIME 
@@ -36,7 +36,7 @@ void vDispatcherTask(void *pvParameters) {
                     /* Checking the availability of free resources in each 
                      * department, starting from department with the lowest 
                      * priority up to the highest priority department. */
-                    if( ( xEventGroupValue & pxDepartments[uxDeptPriorityOrder[i]].bits_available )) {
+                    if( ( xEventGroupValue & pxDepartments[uxDeptPriorityOrder[i]].uxBitsAvailable )) {
                         xFreeResourceFound = true;
 
                         xStatusSend = xQueueSend(pxDepartments[uxDeptPriorityOrder[i]].xQueue, &xEvent, portMAX_DELAY);

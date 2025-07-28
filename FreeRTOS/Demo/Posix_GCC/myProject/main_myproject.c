@@ -48,7 +48,7 @@ void main_myproject(void) {
         printf("Creating event group FAILED.\n");
     }
 
-   xEventGroupSetBits( xDepartmentEventGroup, uxBitsAvailable ); 
+   xEventGroupSetBits( xDepartmentEventGroup, uxBitsAvailableAll ); 
 
     vTaskStartScheduler();
 

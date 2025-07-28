@@ -1,7 +1,7 @@
 #include "department.h"
 
 /*-----------------------------------------------------------*/
-EventBits_t uxBitsAvailable = 0;
+EventBits_t uxBitsAvailableAll = 0;
 EventGroupHandle_t xDepartmentEventGroup = NULL;
 
 UBaseType_t uxDepartmentsAmount = 0;
@@ -15,20 +15,22 @@ department_t* pxInitDepartments() {
      * to maintain deptartment.id = generated event code. */
     static department_t xDepartments[] = {
         {"Null", 0, 1, 0, 0, 0, 0, 0, NULL, NULL},
-        {"Police", deptPOLICE_ID, deptPOLICE_PRIORITY, deptPOLICE_CARS_TOTAL, deptPOLICE_CARS_TOTAL, 0, deptPOLICE_AVAILABLE, NULL, NULL},
-        {"Ambulance", deptAMBULANCE_ID, deptAMBULANCE_PRIORITY, deptAMBULANCE_CARS_TOTAL, deptAMBULANCE_CARS_TOTAL, 0, deptAMBULANCE_AVAILABLE, NULL, NULL},
-        {"Firefighters", deptFIREFIGHTERS_ID, deptFIREFIGHTERS_PRIORITY, deptFIREFIGHTERS_CARS_TOTAL, deptFIREFIGHTERS_CARS_TOTAL, 0, deptFIRE_AVAILABLE, NULL, NULL},
-        {"Corona", deptCORONA_ID, deptCORONA_PRIORITY, deptCORONA_CARS_TOTAL, deptCORONA_CARS_TOTAL, 0, deptCORONA_AVAILABLE, NULL, NULL}
+        {"Police", deptPOLICE_ID, deptPOLICE_PRIORITY, deptPOLICE_CARS_TOTAL, deptPOLICE_CARS_TOTAL, 0, 0, NULL, NULL},
+        {"Ambulance", deptAMBULANCE_ID, deptAMBULANCE_PRIORITY, deptAMBULANCE_CARS_TOTAL, deptAMBULANCE_CARS_TOTAL, 0, 0, NULL, NULL},
+        {"Firefighters", deptFIREFIGHTERS_ID, deptFIREFIGHTERS_PRIORITY, deptFIREFIGHTERS_CARS_TOTAL, deptFIREFIGHTERS_CARS_TOTAL, 0, 0, NULL, NULL},
+        {"Corona", deptCORONA_ID, deptCORONA_PRIORITY, deptCORONA_CARS_TOTAL, deptCORONA_CARS_TOTAL, 0, 0, NULL, NULL}
     };
 
     /* Minus 1 here to exclude "Null" department from total. */
     uxDepartmentsAmount = (sizeof(xDepartments) / sizeof(xDepartments[0])) - 1; 
 
     uxResourcesAmount = 0;
-    uxBitsAvailable = 0;
+    uxBitsAvailableAll = 0;
     for (int i = 1; i <= uxDepartmentsAmount; ++i) {
+        xDepartments[i].uxBitsAvailable = ( 1 << xDepartments[i].ucID );
+
         uxResourcesAmount += xDepartments[i].uxCarsTotal;
-        uxBitsAvailable |= xDepartments[i].bits_available;
+        uxBitsAvailableAll |= xDepartments[i].uxBitsAvailable;
 
         /* Getting initial values of indexes of each department. */
         uxDeptPriorityOrder[i - 1] = xDepartments[i].ucID;
@@ -80,7 +82,7 @@ void vDepartmentTask( void *pvParameters ) {
                     vLogQueueSendError("xQueueEvents");
                 }
             } else {
-                xEventGroupSetBits(xDepartmentEventGroup, xDepartment->bits_available);
+                xEventGroupSetBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);
             }
 
             xStatusTake = xSemaphoreTake( xDepartment->xCountSemaphore, portMAX_DELAY );
