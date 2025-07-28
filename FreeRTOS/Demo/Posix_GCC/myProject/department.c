@@ -1,6 +1,7 @@
 #include "department.h"
 
 /*-----------------------------------------------------------*/
+EventBits_t uxBitsAvailable = 0;
 EventGroupHandle_t xDepartmentEventGroup = NULL;
 
 UBaseType_t uxDepartmentsAmount = 0;
@@ -24,13 +25,13 @@ department_t* pxInitDepartments() {
     uxDepartmentsAmount = (sizeof(xDepartments) / sizeof(xDepartments[0])) - 1; 
 
     uxResourcesAmount = 0;
+    uxBitsAvailable = 0;
     for (int i = 1; i <= uxDepartmentsAmount; ++i) {
         uxResourcesAmount += xDepartments[i].uxCarsTotal;
-    }
+        uxBitsAvailable |= xDepartments[i].bits_available;
 
-    /* Getting initial values of indexes of each department. */
-    for (int i = 0; i < uxDepartmentsAmount; ++i) {
-        uxDeptPriorityOrder[i] = xDepartments[i + 1].ucID;
+        /* Getting initial values of indexes of each department. */
+        uxDeptPriorityOrder[i - 1] = xDepartments[i].ucID;
     }
 
     /* Sorting indexes of departments by priority of those departments. This 
@@ -79,7 +80,6 @@ void vDepartmentTask( void *pvParameters ) {
                     vLogQueueSendError("xQueueEvents");
                 }
             } else {
-                //xEventGroupSetBits(xDepartmentEventGroup, (1 << xDepartment->id)); TODO check that I don't need this
                 xEventGroupSetBits(xDepartmentEventGroup, xDepartment->bits_available);
             }
 

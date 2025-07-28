@@ -41,6 +41,7 @@
 #define deptCORONA_AVAILABLE       (1 << deptCORONA_ID)
 
 extern QueueHandle_t        xQueueEvents;
+extern EventBits_t          uxBitsAvailable;
 extern EventGroupHandle_t   xDepartmentEventGroup;
 
 extern UBaseType_t uxDepartmentsAmount;
@@ -57,7 +58,7 @@ typedef struct {
     UBaseType_t         uxCarsTotal;
     UBaseType_t         uxCarsAvailable;
     UBaseType_t         uxCallsTotal; 
-    UBaseType_t         bits_available;
+    UBaseType_t         bits_available; // TODO rename?
     QueueHandle_t       xQueue;
     SemaphoreHandle_t   xCountSemaphore;
 } department_t;

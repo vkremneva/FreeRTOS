@@ -8,14 +8,6 @@ void vDispatcherTask(void *pvParameters) {
 
     EventBits_t xEventGroupValue = 0;
 
-    // TODO still not for n departments
-    const EventBits_t xBitsToWaitFor = ( 
-        deptAMBULANCE_AVAILABLE | \
-        deptPOLICE_AVAILABLE | \
-        deptFIRE_AVAILABLE | \
-        deptCORONA_AVAILABLE 
-    );
-
     event_t xEvent = {0, false};
 
     xLastWakeTime = xTaskGetTickCount();
@@ -33,7 +25,7 @@ void vDispatcherTask(void *pvParameters) {
             } else {
                 xEventGroupValue = xEventGroupWaitBits(
                     xDepartmentEventGroup,
-                    xBitsToWaitFor,
+                    uxBitsAvailable,
                     pdFALSE,
                     pdFALSE,
                     deptMAX_GROUP_WAIT_TIME 

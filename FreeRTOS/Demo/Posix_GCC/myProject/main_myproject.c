@@ -48,13 +48,7 @@ void main_myproject(void) {
         printf("Creating event group FAILED.\n");
     }
 
-    // TODO still not for n departments
-    xEventGroupSetBits( xDepartmentEventGroup, 
-                       deptPOLICE_AVAILABLE | 
-                       deptAMBULANCE_AVAILABLE | 
-                       deptFIRE_AVAILABLE | 
-                       deptCORONA_AVAILABLE
-    );
+   xEventGroupSetBits( xDepartmentEventGroup, uxBitsAvailable ); 
 
     vTaskStartScheduler();
 
