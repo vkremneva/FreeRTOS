@@ -21,9 +21,13 @@
 #define eventsMAX_EVENT_CODE    3
 #define eventsMIN_EVENT_CODE    1
 
+#define eventCODE           1
+#define eventFREE_RESOURCE  2
+
 typedef struct {
-    uint8_t   ucCode;
-    bool      xRejected;
+    uint8_t     ucCode;
+    bool        xRejected;
+    uint16_t    uxType;
 } event_t;
 
 extern QueueHandle_t xQueueEvents;

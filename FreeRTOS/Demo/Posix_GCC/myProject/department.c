@@ -14,11 +14,11 @@ department_t* pxInitDepartments() {
      * only to its own element in xDepartments[]. Adding "Null" department 
      * to maintain deptartment.id = generated event code. */
     static department_t xDepartments[] = {
-        {"Null", 0, 1, 0, 0, 0, 0, 0, NULL, NULL},
-        {"Police", deptPOLICE_ID, deptPOLICE_PRIORITY, deptPOLICE_CARS_TOTAL, deptPOLICE_CARS_TOTAL, 0, 0, NULL, NULL},
-        {"Ambulance", deptAMBULANCE_ID, deptAMBULANCE_PRIORITY, deptAMBULANCE_CARS_TOTAL, deptAMBULANCE_CARS_TOTAL, 0, 0, NULL, NULL},
-        {"Firefighters", deptFIREFIGHTERS_ID, deptFIREFIGHTERS_PRIORITY, deptFIREFIGHTERS_CARS_TOTAL, deptFIREFIGHTERS_CARS_TOTAL, 0, 0, NULL, NULL},
-        {"Corona", deptCORONA_ID, deptCORONA_PRIORITY, deptCORONA_CARS_TOTAL, deptCORONA_CARS_TOTAL, 0, 0, NULL, NULL}
+        {"Null", 0, 1, 0, 0, 0, 0, NULL},
+        {"Police", deptPOLICE_ID, deptPOLICE_PRIORITY, deptPOLICE_CARS_TOTAL, deptPOLICE_CARS_TOTAL, 0, 0, NULL},
+        {"Ambulance", deptAMBULANCE_ID, deptAMBULANCE_PRIORITY, deptAMBULANCE_CARS_TOTAL, deptAMBULANCE_CARS_TOTAL, 0, 0, NULL},
+        {"Firefighters", deptFIREFIGHTERS_ID, deptFIREFIGHTERS_PRIORITY, deptFIREFIGHTERS_CARS_TOTAL, deptFIREFIGHTERS_CARS_TOTAL, 0, 0, NULL},
+        {"Corona", deptCORONA_ID, deptCORONA_PRIORITY, deptCORONA_CARS_TOTAL, deptCORONA_CARS_TOTAL, 0, 0, NULL}
     };
 
     /* Minus 1 here to exclude "Null" department from total. */
@@ -58,44 +58,48 @@ void vDepartmentTask( void *pvParameters ) {
     department_t *xDepartment = (department_t *)pvParameters;
 
     BaseType_t xStatusReceive = 0, xStatusTake = 0, xStatusSend = 0;
-    TickType_t xUsageStartTime = 0, xTimestamp = 0;
+    TickType_t xUsageStartTime = 0;
 
-    resource_request_t xRequest = { NULL, 0, 0, NULL };
+    resource_request_t xRequest = { xDepartment->psName, xDepartment->ucID, 0, 0, xDepartment->xQueue };
     event_t xEvent = { 0, false };
 
     for ( ;; ) {
         xStatusReceive = xQueueReceive( xDepartment->xQueue, &xEvent, portMAX_DELAY ); 
         if (xStatusReceive == pdPASS) {
-            xTimestamp = xTaskGetTickCount();
-            addToCSVLog(&log_to_csv, xTimestamp, xEvent.ucCode, xDepartment->psName);
 
-            xUsageStartTime = xTaskGetTickCount();
+            if (xEvent.uxType == eventCODE) {
+                /* For debug puposes only. */
+                addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, xDepartment->psName);
 
-            xDepartment->uxCarsAvailable = uxSemaphoreGetCount( xDepartment->xCountSemaphore );
-            if (xDepartment->uxCarsAvailable == 0) {
-                xEvent.xRejected = true;
-                vLogNoResourceAvailable( xDepartment->psName );
+                xUsageStartTime = xTaskGetTickCount();
+        
+                if (xDepartment->uxCarsAvailable == 0) {
+                    xEvent.xRejected = true;
+                    vLogNoResourceAvailable( xDepartment->psName );
 
-                xEventGroupClearBits(xDepartmentEventGroup, (1 << xDepartment->ucID));                
-                xStatusSend = xQueueSendToFront(xQueueEvents, &xEvent, portMAX_DELAY);
-                if (xStatusSend == errQUEUE_FULL) {
-                    vLogQueueSendError("xQueueEvents");
+                    xEventGroupClearBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);   
+
+                    xStatusSend = xQueueSendToFront(xQueueEvents, &xEvent, portMAX_DELAY);
+                    if (xStatusSend == errQUEUE_FULL) {
+                        vLogQueueSendError("xQueueEvents");
+                    }
+                } else {
+                    xRequest.ucEventCode = xEvent.ucCode;
+                    xRequest.xUsageStartTime = xUsageStartTime;
+
+                    xStatusSend = xQueueSend(xQueueResources, &xRequest, portMAX_DELAY);
+                    if (xStatusSend != errQUEUE_FULL) {
+                        xDepartment->uxCarsAvailable -= 1;
+                    } else {
+                        vLogQueueSendError("xQueueResources");
+                    }
                 }
-            } else {
-                xEventGroupSetBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);
             }
+            if (xEvent.uxType == eventFREE_RESOURCE) {
+                xDepartment->uxCarsAvailable += 1;
 
-            xStatusTake = xSemaphoreTake( xDepartment->xCountSemaphore, portMAX_DELAY );
-            if (xStatusTake == pdPASS) {
-            
-                xRequest.psDepartmentName = xDepartment->psName;
-                xRequest.ucEventCode = xEvent.ucCode;
-                xRequest.xUsageStartTime = xUsageStartTime;
-                xRequest.pxDepartmentSemaphore = xDepartment->xCountSemaphore; // TODO не должен ли тут быть адрес
-
-                xStatusSend = xQueueSend(xQueueResources, &xRequest, portMAX_DELAY);
-                if (xStatusSend == errQUEUE_FULL) {
-                    vLogQueueSendError("xQueueResources");
+                if (xDepartment->uxCarsAvailable == 1) {
+                    xEventGroupSetBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);
                 }
             }
         }

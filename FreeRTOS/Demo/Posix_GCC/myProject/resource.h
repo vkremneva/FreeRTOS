@@ -8,7 +8,7 @@
 
 #include "department.h"
 
-#define resourceTASK_PRIORITY       3
+#define resourceTASK_PRIORITY       4
 
 #define resourceQUEUE_SIZE          10
 #define resourceQUEUE_ITEM_SIZE     (sizeof(resource_request_t))
@@ -20,9 +20,10 @@ extern QueueHandle_t xQueueResources;
 
 typedef struct {
     char                *psDepartmentName;
+    uint8_t              ucDepartmentID;
     uint8_t              ucEventCode;
     TickType_t           xUsageStartTime;
-    SemaphoreHandle_t   *pxDepartmentSemaphore;
+    QueueHandle_t        xDepartmentQueue;
 } resource_request_t;
 
 void vResourceTask(void *pvParameters);

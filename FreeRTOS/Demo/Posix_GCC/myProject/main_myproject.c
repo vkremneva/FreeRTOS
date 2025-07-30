@@ -21,9 +21,8 @@ void main_myproject(void) {
 
     for (int i = 1; i <= uxDepartmentsAmount; ++i) {
         xDepartments[i].xQueue = xQueueCreate( deptQUEUE_SIZE, deptQUEUE_ITEM_SIZE );
-        xDepartments[i].xCountSemaphore = xSemaphoreCreateCounting( xDepartments[i].uxCarsTotal, xDepartments[i].uxCarsTotal );
 
-        if (xDepartments[i].xQueue == NULL || xDepartments[i].xCountSemaphore == NULL) {
+        if (xDepartments[i].xQueue == NULL) {
             printf("Initializing resources for %s department FAILED.\n", xDepartments[i].psName);
             return;
         }

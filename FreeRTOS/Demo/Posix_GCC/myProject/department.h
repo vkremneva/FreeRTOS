@@ -35,11 +35,6 @@
 #define deptFIREFIGHTERS_PRIORITY   4
 #define deptCORONA_PRIORITY         2
 
-//#define deptPOLICE_AVAILABLE       (1 << deptPOLICE_ID)
-//#define deptAMBULANCE_AVAILABLE    (1 << deptAMBULANCE_ID)
-//#define deptFIRE_AVAILABLE         (1 << deptFIREFIGHTERS_ID )
-//#define deptCORONA_AVAILABLE       (1 << deptCORONA_ID)
-
 extern QueueHandle_t        xQueueEvents;
 extern EventBits_t          uxBitsAvailableAll;
 extern EventGroupHandle_t   xDepartmentEventGroup;
@@ -60,7 +55,6 @@ typedef struct {
     UBaseType_t         uxCallsTotal; 
     UBaseType_t         uxBitsAvailable;
     QueueHandle_t       xQueue;
-    SemaphoreHandle_t   xCountSemaphore;
 } department_t;
 
 department_t* pxInitDepartments();
