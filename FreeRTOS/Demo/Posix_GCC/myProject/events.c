@@ -7,10 +7,10 @@ void vEventGeneratorTask(void *pvParameters) {
     TickType_t xTicksToWait = 0;
     BaseType_t xStatusSend = 0;
 
-    event_t xEvent = { 0, false, eventCODE, 0 };
+    event_t xEvent = { 0, false, eventsCODE, 0, 0 };
 
     for ( ;; ) {
-        xEvent.ucCode = rand() % eventsMAX_EVENT_CODE + eventsMIN_EVENT_CODE;
+        xEvent.ucCode = eventsMIN_EVENT_CODE + rand() % (eventsMAX_EVENT_CODE - eventsMIN_EVENT_CODE + 1);
 
         xStatusSend = xQueueSend(xQueueEvents, &xEvent, portMAX_DELAY);
         if (xStatusSend == errQUEUE_FULL) {
@@ -20,7 +20,7 @@ void vEventGeneratorTask(void *pvParameters) {
         /* For debug puposes only. */
         addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Event Generator Task");
 
-        xTicksToWait = pdMS_TO_TICKS( rand() % eventMAX_WAIT_TIME + eventsMIN_WAIT_TIME );
+        xTicksToWait = pdMS_TO_TICKS( eventsMIN_WAIT_TIME + rand() % (eventsMAX_WAIT_TIME - eventsMIN_WAIT_TIME + 1) );
         vTaskDelay(xTicksToWait);
     }
 }

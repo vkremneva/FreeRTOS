@@ -58,20 +58,17 @@ void vDepartmentTask( void *pvParameters ) {
     department_t *xDepartment = (department_t *)pvParameters;
 
     BaseType_t xStatusReceive = 0, xStatusTake = 0, xStatusSend = 0;
-    TickType_t xUsageStartTime = 0;
 
     resource_request_t xRequest = { xDepartment->psName, xDepartment->ucID, 0, 0, xDepartment->xQueue };
-    event_t xEvent = { 0, false };
+    event_t xEvent = { 0, false, eventsCODE, 0, 0 };
 
     for ( ;; ) {
         xStatusReceive = xQueueReceive( xDepartment->xQueue, &xEvent, portMAX_DELAY ); 
         if (xStatusReceive == pdPASS) {
 
-            if (xEvent.uxType == eventCODE) {
+            if (xEvent.uxType == eventsCODE) {
                 /* For debug puposes only. */
                 addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, xDepartment->psName);
-
-                xUsageStartTime = xTaskGetTickCount();
         
                 if (xDepartment->uxCarsAvailable == 0) {
                     xEvent.xRejected = true;
@@ -87,7 +84,7 @@ void vDepartmentTask( void *pvParameters ) {
                     }
                 } else {
                     xRequest.ucEventCode = xEvent.ucCode;
-                    xRequest.xUsageStartTime = xUsageStartTime;
+                    xRequest.xUsageStartTime = xEvent.xUsageStartTime;
 
                     xStatusSend = xQueueSend(xQueueResources, &xRequest, portMAX_DELAY);
                     if (xStatusSend != errQUEUE_FULL) {
@@ -97,16 +94,16 @@ void vDepartmentTask( void *pvParameters ) {
                     }
                 }
             }
-            if (xEvent.uxType == eventFREE_RESOURCE) {
+            if (xEvent.uxType == eventsFREE_RESOURCE) {
                 xDepartment->uxCarsAvailable += 1;
 
                 if (xDepartment->uxCarsAvailable == 1) {
                     xEventGroupSetBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);
                 }
 
-                printf("%s: Received the event code %d. ", xDepartment->psName, xRequest.ucEventCode);
+                printf("%s: Received the event code %d. ", xDepartment->psName, xEvent.ucCode);
                 printf("A free resource was allocated. ");
-                printf("Task lasted %lu. The task was completed.\n", ( xTaskGetTickCount() - xRequest.xUsageStartTime) );
+                printf("Task lasted %lu. The task was completed.\n", ( xTaskGetTickCount() - xEvent.xUsageStartTime) );
             }
         }
     }

@@ -8,7 +8,7 @@ void vDispatcherTask(void *pvParameters) {
 
     EventBits_t xEventGroupValue = 0;
 
-    event_t xEvent = { 0, false };
+    event_t xEvent = { 0, false, eventsCODE, 0, 0 };
 
     xLastWakeTime = xTaskGetTickCount();
     bool xFreeResourceFound = false;
@@ -16,18 +16,20 @@ void vDispatcherTask(void *pvParameters) {
     for ( ;; ) {
         xStatusReceive = xQueueReceive(xQueueEvents, &xEvent, portMAX_DELAY);
         if (xStatusReceive == pdPASS) {
+
+            /* For debug puposes only. */
+            addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task");
+
             if (!xEvent.xRejected) {
+                xEvent.xUsageStartTime = xTaskGetTickCount();
 
                 xStatusSend = xQueueSend(pxDepartments[xEvent.ucCode].xQueue, &xEvent, portMAX_DELAY);
                 if (xStatusSend == errQUEUE_FULL) {
                     vLogQueueSendError(pxDepartments[xEvent.ucCode].psName);
                 }
 
-                /* For debug puposes only. */
-                addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task");
-
             } else {
-                if (xEvent.uxCounterRejected != eventCOUNTER_REJECTED_MAX) {
+                if (xEvent.uxCounterRejected != eventsCOUNTER_REJECTED_MAX) {
 
                     xEventGroupValue = xEventGroupWaitBits(
                         xDepartmentEventGroup,

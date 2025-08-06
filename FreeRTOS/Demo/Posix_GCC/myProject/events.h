@@ -16,21 +16,22 @@
 #define eventsPRIORITY          5
 
 #define eventsMIN_WAIT_TIME     200
-#define eventMAX_WAIT_TIME      800
+#define eventsMAX_WAIT_TIME     800
 
 #define eventsMAX_EVENT_CODE    3
 #define eventsMIN_EVENT_CODE    1
 
-#define eventCODE           1
-#define eventFREE_RESOURCE  2
+#define eventsCODE           1
+#define eventsFREE_RESOURCE  2
 
-#define eventCOUNTER_REJECTED_MAX 10
+#define eventsCOUNTER_REJECTED_MAX 10
 
 typedef struct {
     uint8_t     ucCode;
     bool        xRejected;
     BaseType_t  uxType;
     BaseType_t  uxCounterRejected;
+    TickType_t  xUsageStartTime;
 } event_t;
 
 extern QueueHandle_t xQueueEvents;
