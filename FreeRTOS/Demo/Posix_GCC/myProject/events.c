@@ -7,7 +7,7 @@ void vEventGeneratorTask(void *pvParameters) {
     TickType_t xTicksToWait = 0;
     BaseType_t xStatusSend = 0;
 
-    event_t xEvent = { 0, false, eventCODE };
+    event_t xEvent = { 0, false, eventCODE, 0 };
 
     for ( ;; ) {
         xEvent.ucCode = rand() % eventsMAX_EVENT_CODE + eventsMIN_EVENT_CODE;

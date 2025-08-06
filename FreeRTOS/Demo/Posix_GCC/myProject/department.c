@@ -75,6 +75,8 @@ void vDepartmentTask( void *pvParameters ) {
         
                 if (xDepartment->uxCarsAvailable == 0) {
                     xEvent.xRejected = true;
+                    xEvent.uxCounterRejected += 1;
+
                     vLogNoResourceAvailable( xDepartment->psName );
 
                     xEventGroupClearBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);   

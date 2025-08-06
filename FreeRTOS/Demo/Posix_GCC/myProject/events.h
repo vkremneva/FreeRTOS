@@ -24,10 +24,13 @@
 #define eventCODE           1
 #define eventFREE_RESOURCE  2
 
+#define eventCOUNTER_REJECTED_MAX 10
+
 typedef struct {
     uint8_t     ucCode;
     bool        xRejected;
-    uint16_t    uxType;
+    BaseType_t  uxType;
+    BaseType_t  uxCounterRejected;
 } event_t;
 
 extern QueueHandle_t xQueueEvents;
