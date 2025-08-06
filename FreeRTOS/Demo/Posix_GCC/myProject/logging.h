@@ -7,19 +7,21 @@
 
 #include "FreeRTOS.h"
 
+#include "events.h"
+
 #define logBUFFER_SIZE        256
 #define logDEPT_NAME_MAXLEN   50
 
-void vLogDepartmentUsage( char *pcDepartmentName, UBaseType_t ulDepartmentID, TickType_t xUseTime );
 void vLogNoResourceAvailable( char *pcDepartmentName );
 void vLogQueueSendError( char *pcQueueName );
+void vLogEventRejectedMax( event_t xEvent, char *psDepartmentName );
 
 /* For debug puposes only. */
 #include <stdatomic.h>
 
 #define logCSV_BUFFER_SIZE  10240
 #define logCSV_MSG_SIZE     64
-#define logCSV_UPTIME       10000
+#define logCSV_UPTIME       100000
 #define logCSV_FILENAME     "./myProject/log.csv"
 
 typedef struct {

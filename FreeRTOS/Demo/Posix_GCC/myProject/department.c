@@ -83,7 +83,7 @@ void vDepartmentTask( void *pvParameters ) {
 
                     xStatusSend = xQueueSendToFront(xQueueEvents, &xEvent, portMAX_DELAY);
                     if (xStatusSend == errQUEUE_FULL) {
-                        vLogQueueSendError("xQueueEvents");
+                        vLogQueueSendError("Events");
                     }
                 } else {
                     xRequest.ucEventCode = xEvent.ucCode;
@@ -93,7 +93,7 @@ void vDepartmentTask( void *pvParameters ) {
                     if (xStatusSend != errQUEUE_FULL) {
                         xDepartment->uxCarsAvailable -= 1;
                     } else {
-                        vLogQueueSendError("xQueueResources");
+                        vLogQueueSendError("Resources");
                     }
                 }
             }
@@ -103,6 +103,10 @@ void vDepartmentTask( void *pvParameters ) {
                 if (xDepartment->uxCarsAvailable == 1) {
                     xEventGroupSetBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);
                 }
+
+                printf("%s: Received the event code %d. ", xDepartment->psName, xRequest.ucEventCode);
+                printf("A free resource was allocated. ");
+                printf("Task lasted %lu. The task was completed.\n", ( xTaskGetTickCount() - xRequest.xUsageStartTime) );
             }
         }
     }

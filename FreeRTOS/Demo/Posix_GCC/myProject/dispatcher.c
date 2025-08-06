@@ -17,7 +17,11 @@ void vDispatcherTask(void *pvParameters) {
         xStatusReceive = xQueueReceive(xQueueEvents, &xEvent, portMAX_DELAY);
         if (xStatusReceive == pdPASS) {
             if (!xEvent.xRejected) {
+
                 xStatusSend = xQueueSend(pxDepartments[xEvent.ucCode].xQueue, &xEvent, portMAX_DELAY);
+                if (xStatusSend == errQUEUE_FULL) {
+                    vLogQueueSendError(pxDepartments[xEvent.ucCode].psName);
+                }
 
                 /* For debug puposes only. */
                 addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task");
@@ -40,7 +44,11 @@ void vDispatcherTask(void *pvParameters) {
                         * priority up to the highest priority department. */
                         if( ( xEventGroupValue & pxDepartments[uxDeptPriorityOrder[i]].uxBitsAvailable )) {
                             xFreeResourceFound = true;
+
                             xStatusSend = xQueueSend(pxDepartments[uxDeptPriorityOrder[i]].xQueue, &xEvent, portMAX_DELAY);
+                            if (xStatusSend == errQUEUE_FULL) {
+                                vLogQueueSendError(pxDepartments[xEvent.ucCode].psName);
+                            }
                             
                             /* For debug puposes only. */
                             printf("*********EVENT %d SENT TO %d\n", xEvent.ucCode, i + 1);
@@ -51,17 +59,19 @@ void vDispatcherTask(void *pvParameters) {
                     }
 
                     if (!xFreeResourceFound) {
-                        vLogNoResourceAvailable("Dispatcher");
+                        vLogNoResourceAvailable("All departments");
                         xEvent.uxCounterRejected += 1;
 
                         xStatusSend = xQueueSendToFront(xQueueEvents, &xEvent, portMAX_DELAY);
                         if (xStatusSend == errQUEUE_FULL) {
-                            vLogQueueSendError("xQueueEvents");
+                            vLogQueueSendError("Events");
                         }
 
                         /* For debug puposes only. */
                         printf("**********NO FREE RESOURCE FOUND\n");
                     }
+                } else {
+                    vLogEventRejectedMax(xEvent, pxDepartments[xEvent.ucCode].psName);
                 }
             }
         }

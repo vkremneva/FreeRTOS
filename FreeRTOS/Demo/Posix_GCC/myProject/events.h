@@ -3,12 +3,12 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
-
-#include "logging.h"
 
 #define eventsQUEUE_SIZE        10
 #define eventsQUEUE_ITEM_SIZE   (sizeof(event_t)) 
@@ -34,6 +34,7 @@ typedef struct {
 } event_t;
 
 extern QueueHandle_t xQueueEvents;
+extern void vLogQueueSendError( char *pcQueueName );
 
 /* For debug puposes only. */
 extern struct logCSV log_to_csv;

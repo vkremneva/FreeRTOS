@@ -11,7 +11,11 @@ void vEventGeneratorTask(void *pvParameters) {
 
     for ( ;; ) {
         xEvent.ucCode = rand() % eventsMAX_EVENT_CODE + eventsMIN_EVENT_CODE;
+
         xStatusSend = xQueueSend(xQueueEvents, &xEvent, portMAX_DELAY);
+        if (xStatusSend == errQUEUE_FULL) {
+            vLogQueueSendError("Event");
+        }
 
         /* For debug puposes only. */
         addToCSVLog(&log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Event Generator Task");
