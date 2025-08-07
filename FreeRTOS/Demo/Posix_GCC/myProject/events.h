@@ -10,13 +10,13 @@
 #include "semphr.h"
 #include "queue.h"
 
-#define eventsQUEUE_SIZE        10
+#define eventsQUEUE_SIZE        10000
 #define eventsQUEUE_ITEM_SIZE   (sizeof(event_t)) 
 
-#define eventsPRIORITY          5
+#define eventsPRIORITY          3
 
 #define eventsMIN_WAIT_TIME     200
-#define eventsMAX_WAIT_TIME     800
+#define eventsMAX_WAIT_TIME     1000
 
 #define eventsMAX_EVENT_CODE    3
 #define eventsMIN_EVENT_CODE    1

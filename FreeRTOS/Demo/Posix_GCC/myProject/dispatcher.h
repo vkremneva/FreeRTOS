@@ -12,7 +12,7 @@
 #include "logging.h"
 
 #define dispPRIORITY  3
-#define dispDELAY     ( pdMS_TO_TICKS( 500 ) )
+#define dispDELAY     ( pdMS_TO_TICKS( 1000 ) )
 
 extern QueueHandle_t xQueueEvents;
 

@@ -15,7 +15,7 @@
 #include "logging.h"
 #include "resource.h"
 
-#define deptQUEUE_SIZE              100
+#define deptQUEUE_SIZE              10000
 #define deptQUEUE_ITEM_SIZE         (sizeof(event_t))
 #define deptMAX_GROUP_WAIT_TIME     500
 #define deptMAX_DEPARTMENTS_AMOUNT  10

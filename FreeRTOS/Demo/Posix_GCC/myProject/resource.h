@@ -10,11 +10,11 @@
 
 #define resourceTASK_PRIORITY       4
 
-#define resourceQUEUE_SIZE          10
-#define resourceQUEUE_ITEM_SIZE     (sizeof(resource_request_t))
+#define resourceQUEUE_SIZE          10000
+#define resourceQUEUE_ITEM_SIZE     ( sizeof( resource_request_t ) )
 
-#define resourceUSE_MIN_TIME        500
-#define resourceUSE_MAX_TIME        3000
+#define resourceUSE_MIN_TIME        1000
+#define resourceUSE_MAX_TIME        5000
 
 extern QueueHandle_t xQueueResources;
 
