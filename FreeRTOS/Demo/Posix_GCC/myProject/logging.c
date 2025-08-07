@@ -6,7 +6,7 @@ void vLogNoResourceAvailable( char *pcDepartmentName ) {
 }
 /*-----------------------------------------------------------*/
 
-void vLogQueueSendError(char *pcQueueName) {
+void vLogQueueSendError( char *pcQueueName ) {
     printf("ERROR: Failed to send to %s Queue, it is full.\n", pcQueueName);
 }
 /*-----------------------------------------------------------*/
@@ -15,6 +15,12 @@ void vLogEventRejectedMax( event_t xEvent, char *psDepartmentName ) {
     printf("FAILURE: Event from %s ", psDepartmentName);
     printf("was rejected %lu times ", xEvent.uxCounterRejected);
     printf("and now is removed from the queue. \n");
+}
+/*-----------------------------------------------------------*/
+void vLogDepartmentUsage( char *pcDepartmentName, uint8_t ucEventCode, TickType_t xUseTime ) {
+    printf("%s: Received the event code %d. ", pcDepartmentName, ucEventCode);
+    printf("A free resource was allocated. ");
+    printf("Task lasted %lu. The task was completed.\n", xUseTime);
 }
 /*-----------------------------------------------------------*/
 

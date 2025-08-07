@@ -101,10 +101,10 @@ void vDepartmentTask( void *pvParameters ) {
                     xEventGroupSetBits(xDepartmentEventGroup, xDepartment->uxBitsAvailable);
                 }
 
-                printf("%s: Received the event code %d. ", xDepartment->psName, xEvent.ucCode);
-                printf("A free resource was allocated. ");
-                printf("Task lasted %lu. The task was completed.\n", ( xTaskGetTickCount() - xEvent.xUsageStartTime) );
+                vLogDepartmentUsage( xDepartment->psName, xEvent.ucCode,  (xTaskGetTickCount() - xEvent.xUsageStartTime ));
             }
         }
+
+        vTaskDelay( pdMS_TO_TICKS( 1 ) );
     }
 }

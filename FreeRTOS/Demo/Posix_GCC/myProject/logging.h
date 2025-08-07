@@ -15,6 +15,7 @@
 void vLogNoResourceAvailable( char *pcDepartmentName );
 void vLogQueueSendError( char *pcQueueName );
 void vLogEventRejectedMax( event_t xEvent, char *psDepartmentName );
+void vLogDepartmentUsage( char *pcDepartmentName, uint8_t ucEventCode, TickType_t xUseTime );
 
 /* For debug puposes only. */
 #include <stdatomic.h>
