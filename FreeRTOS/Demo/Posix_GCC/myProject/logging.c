@@ -1,4 +1,4 @@
-#include "logging.h"
+#include "include/logging.h"
 
 void vLogNoResourceAvailable( char *pcDepartmentName ) {
     printf("ERROR: No resources available for %s. ", pcDepartmentName);

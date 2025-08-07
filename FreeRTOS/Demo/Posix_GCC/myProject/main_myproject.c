@@ -5,10 +5,10 @@
 #include "semphr.h"
 #include "queue.h"
  
-#include "events.h"
-#include "dispatcher.h"
-#include "department.h"
-#include "resource.h"
+#include "include/events.h"
+#include "include/dispatcher.h"
+#include "include/department.h"
+#include "include/resource.h"
 
 struct logCSV log_to_csv;
 
