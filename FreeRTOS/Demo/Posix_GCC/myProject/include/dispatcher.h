@@ -11,14 +11,14 @@
 #include "department.h"
 #include "logging.h"
 
-#define dispPRIORITY  3
-#define dispDELAY     ( pdMS_TO_TICKS( 1000 ) )
+#define dispPRIORITY    3
+#define dispDELAY       ( pdMS_TO_TICKS( 1000 ))
 
 extern QueueHandle_t xQueueEvents;
 
 /* For debug puposes only. */
 extern struct logCSV log_to_csv;
 
-void vDispatcherTask(void *pvParameters);
+void vDispatcherTask( void * pvParameters );
 
-#endif
+#endif /* ifndef DISPATCHER_H */
