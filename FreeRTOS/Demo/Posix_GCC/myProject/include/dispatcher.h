@@ -1,3 +1,11 @@
+/**
+ * @file dispatcher.h
+ * @brief Dispatcher module.
+ *
+ * Responsible for dispatching events from the global event queue
+ * to appropriate departments.
+ */
+
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
@@ -14,8 +22,14 @@
 #define dispPRIORITY    3
 #define dispDELAY       ( pdMS_TO_TICKS( 1000 ))
 
-extern QueueHandle_t xQueueEvents;
-
+/**
+ * @brief FreeRTOS dispatcher task.
+ *
+ * Fetches events from the event queue and routes them
+ * to the correct department based on priority and availability.
+ *
+ * @param pvParameters Pointer to department_d descriptor of all departments.
+ */
 void vDispatcherTask( void * pvParameters );
 
 #endif /* ifndef DISPATCHER_H */
