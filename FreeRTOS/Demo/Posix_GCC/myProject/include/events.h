@@ -55,7 +55,7 @@ extern QueueHandle_t xQueueEvents;
 
 /**
  * @brief FreeRTOS task for generating random events.
- * @param pvParameters Pointer to task parameters (if any).
+ * @param pvParameters Unused for this task.
  */
 void vEventGeneratorTask( void * pvParameters );
 
