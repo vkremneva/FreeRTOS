@@ -79,8 +79,7 @@ void vDepartmentTask( void * pvParameters )
         {
             if( xEvent.uxType == eventsCODE )
             {
-                /* For debug puposes only. */
-                addToCSVLog( &log_to_csv, xTaskGetTickCount(), xEvent.ucCode, xDepartment->psName );
+                vLogCurrentState( xTaskGetTickCount(), xEvent.ucCode, xDepartment->psName );
 
                 if( xDepartment->uxCarsAvailable == 0 )
                 {
@@ -105,13 +104,13 @@ void vDepartmentTask( void * pvParameters )
 
                     xStatusSend = xQueueSend( xQueueResources, &xRequest, portMAX_DELAY );
 
-                    if( xStatusSend != errQUEUE_FULL )
+                    if( xStatusSend == errQUEUE_FULL )
                     {
-                        xDepartment->uxCarsAvailable -= 1;
+                        vLogQueueSendError( "Resources" );
                     }
                     else
                     {
-                        vLogQueueSendError( "Resources" );
+                        xDepartment->uxCarsAvailable -= 1;
                     }
                 }
             }
@@ -125,7 +124,7 @@ void vDepartmentTask( void * pvParameters )
                     xEventGroupSetBits( xDepartmentEventGroup, xDepartment->uxBitsAvailable );
                 }
 
-                vLogDepartmentUsage( xDepartment->psName, xEvent.ucCode, ( xTaskGetTickCount() - xEvent.xUsageStartTime ));
+                vLogDepartmentUsage(( xTaskGetTickCount() - xEvent.xUsageStartTime ), xEvent.ucCode, xDepartment->psName );
             }
         }
 

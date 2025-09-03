@@ -16,9 +16,6 @@
 
 extern QueueHandle_t xQueueEvents;
 
-/* For debug puposes only. */
-extern struct logCSV log_to_csv;
-
 void vDispatcherTask( void * pvParameters );
 
 #endif /* ifndef DISPATCHER_H */

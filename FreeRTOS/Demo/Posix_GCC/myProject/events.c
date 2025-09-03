@@ -21,8 +21,7 @@ void vEventGeneratorTask( void * pvParameters )
             vLogQueueSendError( "Event" );
         }
 
-        /* For debug puposes only. */
-        addToCSVLog( &log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Event Generator Task" );
+        vLogCurrentState( xTaskGetTickCount(), xEvent.ucCode, "Event Generator Task" );
 
         xTicksToWait = pdMS_TO_TICKS( eventsMIN_WAIT_TIME + rand() % ( eventsMAX_WAIT_TIME - eventsMIN_WAIT_TIME + 1 ));
         vTaskDelay( xTicksToWait );

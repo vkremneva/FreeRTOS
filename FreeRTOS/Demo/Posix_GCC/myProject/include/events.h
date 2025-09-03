@@ -36,10 +36,6 @@ typedef struct
 } event_t;
 
 extern QueueHandle_t xQueueEvents;
-extern void vLogQueueSendError( char * pcQueueName );
-
-/* For debug puposes only. */
-extern struct logCSV log_to_csv;
 
 void vEventGeneratorTask( void * pvParameters );
 

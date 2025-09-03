@@ -16,8 +16,7 @@ void vResourceTask( void * pvParameters )
 
         if( xStatusReceive == pdPASS )
         {
-            /* For debug puposes only. */
-            addToCSVLog( &log_to_csv, xTaskGetTickCount(), xRequest.ucEventCode, pcTaskGetTaskName( NULL ));
+            vLogCurrentState( xTaskGetTickCount(), xRequest.ucEventCode, pcTaskGetTaskName( NULL ));
 
             xTicksToWait = pdMS_TO_TICKS( resourceUSE_MIN_TIME + rand() % ( resourceUSE_MAX_TIME - resourceUSE_MIN_TIME + 1 ));
             vTaskDelay( xTicksToWait );
@@ -32,8 +31,7 @@ void vResourceTask( void * pvParameters )
                 vLogQueueSendError( xRequest.psDepartmentName );
             }
 
-            /* For debug puposes only. */
-            addToCSVLog( &log_to_csv, xTaskGetTickCount(), xRequest.ucEventCode, pcTaskGetTaskName( NULL ));
+            vLogCurrentState( xTaskGetTickCount(), xRequest.ucEventCode, pcTaskGetTaskName( NULL ));
         }
     }
 }

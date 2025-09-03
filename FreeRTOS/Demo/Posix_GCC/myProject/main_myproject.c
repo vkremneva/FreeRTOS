@@ -10,13 +10,9 @@
 #include "include/department.h"
 #include "include/resource.h"
 
-struct logCSV log_to_csv;
-
 void main_myproject( void )
 {
     srand( time( NULL ));
-
-    log_to_csv.ind = 0;
 
     department_t * xDepartments = pxInitDepartments();
 
@@ -35,6 +31,7 @@ void main_myproject( void )
 
     xQueueEvents = xQueueCreate( eventsQUEUE_SIZE, eventsQUEUE_ITEM_SIZE );
     xQueueResources = xQueueCreate( resourceQUEUE_SIZE, resourceQUEUE_ITEM_SIZE );
+    xQueueLogging = xQueueCreate( logQUEUE_SIZE, logQUEUE_ITEM_SIZE );
 
     char sResourceTaskName[ 30 ];
 
@@ -46,6 +43,7 @@ void main_myproject( void )
 
     xTaskCreate( vEventGeneratorTask, "EvGenTask", configMINIMAL_STACK_SIZE, ( void * ) xQueueEvents, eventsPRIORITY, NULL );
     xTaskCreate( vDispatcherTask, "DisptTask", configMINIMAL_STACK_SIZE, ( void * ) xDepartments, dispPRIORITY, NULL );
+    xTaskCreate( vLoggingTask, "LogTask", configMINIMAL_STACK_SIZE, ( void * ) xQueueLogging, logPRIORITY, NULL );
 
     xDepartmentEventGroup = xEventGroupCreate();
 

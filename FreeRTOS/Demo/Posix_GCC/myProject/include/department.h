@@ -43,9 +43,6 @@ extern UBaseType_t uxDepartmentsAmount;
 extern UBaseType_t uxResourcesAmount;
 extern UBaseType_t uxDeptPriorityOrder[ deptMAX_DEPARTMENTS_AMOUNT ];
 
-/* For debug puposes only. */
-extern struct logCSV log_to_csv;
-
 typedef struct
 {
     char             * psName;

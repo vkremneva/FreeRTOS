@@ -20,8 +20,7 @@ void vDispatcherTask( void * pvParameters )
 
         if( xStatusReceive == pdPASS )
         {
-            /* For debug puposes only. */
-            addToCSVLog( &log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task" );
+            vLogCurrentState( xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task" );
 
             if( !xEvent.xRejected )
             {
@@ -64,10 +63,8 @@ void vDispatcherTask( void * pvParameters )
                                 vLogQueueSendError( pxDepartments[ xEvent.ucCode ].psName );
                             }
 
-                            /* For debug puposes only. */
-                            printf( "*********EVENT %d SENT TO %d\n", xEvent.ucCode, i + 1 );
-                            addToCSVLog( &log_to_csv, xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task" );
-                            /* End of debug purposes. */
+                            vLogCurrentState( xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task" );
+
                             break;
                         }
                     }
@@ -83,9 +80,6 @@ void vDispatcherTask( void * pvParameters )
                         {
                             vLogQueueSendError( "Events" );
                         }
-
-                        /* For debug puposes only. */
-                        printf( "**********NO FREE RESOURCE FOUND\n" );
                     }
                 }
                 else
