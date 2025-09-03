@@ -16,11 +16,11 @@ department_t* pxInitDepartments()
      * to maintain deptartment.id = generated event code. */
     static department_t xDepartments[] =
     {
-        { "Null",         0,                   1,                         0,                           0,                           0, 0, NULL },
-        { "Police",       deptPOLICE_ID,       deptPOLICE_PRIORITY,       deptPOLICE_CARS_TOTAL,       deptPOLICE_CARS_TOTAL,       0, 0, NULL },
-        { "Ambulance",    deptAMBULANCE_ID,    deptAMBULANCE_PRIORITY,    deptAMBULANCE_CARS_TOTAL,    deptAMBULANCE_CARS_TOTAL,    0, 0, NULL },
-        { "Firefighters", deptFIREFIGHTERS_ID, deptFIREFIGHTERS_PRIORITY, deptFIREFIGHTERS_CARS_TOTAL, deptFIREFIGHTERS_CARS_TOTAL, 0, 0, NULL },
-        { "Corona",       deptCORONA_ID,       deptCORONA_PRIORITY,       deptCORONA_CARS_TOTAL,       deptCORONA_CARS_TOTAL,       0, 0, NULL }
+        { "Null",         0,                   1,                         0,                           0,                           0, NULL },
+        { "Police",       deptPOLICE_ID,       deptPOLICE_PRIORITY,       deptPOLICE_CARS_TOTAL,       deptPOLICE_CARS_TOTAL,       0, NULL },
+        { "Ambulance",    deptAMBULANCE_ID,    deptAMBULANCE_PRIORITY,    deptAMBULANCE_CARS_TOTAL,    deptAMBULANCE_CARS_TOTAL,    0, NULL },
+        { "Firefighters", deptFIREFIGHTERS_ID, deptFIREFIGHTERS_PRIORITY, deptFIREFIGHTERS_CARS_TOTAL, deptFIREFIGHTERS_CARS_TOTAL, 0, NULL },
+        { "Corona",       deptCORONA_ID,       deptCORONA_PRIORITY,       deptCORONA_CARS_TOTAL,       deptCORONA_CARS_TOTAL,       0, NULL }
     };
 
     /* Minus 1 here to exclude "Null" department from total. */
@@ -91,11 +91,7 @@ void vDepartmentTask( void * pvParameters )
                     xEventGroupClearBits( xDepartmentEventGroup, xDepartment->uxBitsAvailable );
 
                     xStatusSend = xQueueSendToFront( xQueueEvents, &xEvent, portMAX_DELAY );
-
-                    if( xStatusSend == errQUEUE_FULL )
-                    {
-                        vLogQueueSendError( "Events" );
-                    }
+                    configASSERT( xStatusSend == pdPASS );
                 }
                 else
                 {
@@ -103,15 +99,9 @@ void vDepartmentTask( void * pvParameters )
                     xRequest.xUsageStartTime = xEvent.xUsageStartTime;
 
                     xStatusSend = xQueueSend( xQueueResources, &xRequest, portMAX_DELAY );
+                    configASSERT( xStatusSend == pdPASS );
 
-                    if( xStatusSend == errQUEUE_FULL )
-                    {
-                        vLogQueueSendError( "Resources" );
-                    }
-                    else
-                    {
-                        xDepartment->uxCarsAvailable -= 1;
-                    }
+                    xDepartment->uxCarsAvailable -= 1;
                 }
             }
 
@@ -127,7 +117,5 @@ void vDepartmentTask( void * pvParameters )
                 vLogDepartmentUsage(( xTaskGetTickCount() - xEvent.xUsageStartTime ), xEvent.ucCode, xDepartment->psName );
             }
         }
-
-        vTaskDelay( pdMS_TO_TICKS( 1 ));
     }
 }

@@ -25,11 +25,7 @@ void vResourceTask( void * pvParameters )
             xFreeResource.xUsageStartTime = xRequest.xUsageStartTime;
 
             xStatusSend = xQueueSendToFront( xRequest.xDepartmentQueue, &xFreeResource, portMAX_DELAY );
-
-            if( xStatusSend == errQUEUE_FULL )
-            {
-                vLogQueueSendError( xRequest.psDepartmentName );
-            }
+            configASSERT( xStatusSend == pdPASS );
 
             vLogCurrentState( xTaskGetTickCount(), xRequest.ucEventCode, pcTaskGetTaskName( NULL ));
         }

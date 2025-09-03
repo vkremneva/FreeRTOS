@@ -27,11 +27,7 @@ void vDispatcherTask( void * pvParameters )
                 xEvent.xUsageStartTime = xTaskGetTickCount();
 
                 xStatusSend = xQueueSend( pxDepartments[ xEvent.ucCode ].xQueue, &xEvent, portMAX_DELAY );
-
-                if( xStatusSend == errQUEUE_FULL )
-                {
-                    vLogQueueSendError( pxDepartments[ xEvent.ucCode ].psName );
-                }
+                configASSERT( xStatusSend == pdPASS );
             }
             else
             {
@@ -57,11 +53,7 @@ void vDispatcherTask( void * pvParameters )
                             xFreeResourceFound = true;
 
                             xStatusSend = xQueueSend( pxDepartments[ uxDeptPriorityOrder[ i ] ].xQueue, &xEvent, portMAX_DELAY );
-
-                            if( xStatusSend == errQUEUE_FULL )
-                            {
-                                vLogQueueSendError( pxDepartments[ xEvent.ucCode ].psName );
-                            }
+                            configASSERT( xStatusSend == pdPASS );
 
                             vLogCurrentState( xTaskGetTickCount(), xEvent.ucCode, "Dispatcher Task" );
 
@@ -75,11 +67,7 @@ void vDispatcherTask( void * pvParameters )
                         xEvent.uxCounterRejected += 1;
 
                         xStatusSend = xQueueSendToFront( xQueueEvents, &xEvent, portMAX_DELAY );
-
-                        if( xStatusSend == errQUEUE_FULL )
-                        {
-                            vLogQueueSendError( "Events" );
-                        }
+                        configASSERT( xStatusSend == pdPASS );
                     }
                 }
                 else

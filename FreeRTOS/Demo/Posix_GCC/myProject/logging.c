@@ -30,8 +30,6 @@ void vMakeLogEntry( BaseType_t uxType,
 
 void vLoggingTask( void * pvParameters )
 {
-    QueueHandle_t xQueueLogging = ( QueueHandle_t ) pvParameters;
-
     BaseType_t xStatusReceive = 0;
 
     static log_t xLog;
@@ -47,10 +45,6 @@ void vLoggingTask( void * pvParameters )
         {
             switch( xLogEntry.uxType )
             {
-                case logERR_QUEUE_SEND:
-                    printf( "ERROR: Failed to send to %s Queue, it is full.\n", xLogEntry.ucEntityName );
-                    break;
-
                 case logERR_DISP_EVENT_REJECTED_MAX:
                     printf( "FAILURE: Event from %s ", xLogEntry.ucEntityName );
                     printf( "was rejected %lu times ", eventsCOUNTER_REJECTED_MAX );
@@ -77,7 +71,15 @@ void vLoggingTask( void * pvParameters )
                     strncpy( xLog.xBody[ xLog.usInd ].ucEntityName, xLogEntry.ucEntityName, logCSV_MSG_SIZE - 1 );
                     xLog.xBody[ xLog.usInd ].ucEntityName[ logCSV_MSG_SIZE - 1 ] = '\0';
 
-                    xLog.usInd++;
+                    if( xLog.usInd < logBUFFER_SIZE ) 
+                    {
+                        xLog.usInd++;
+                    }
+                    else 
+                    {
+                        /* if buffer is already full then stop collecting data */
+                        xLogEntry.xTimestamp = logCSV_UPTIME;
+                    }
 
                     break;
 
@@ -115,12 +117,6 @@ void vLoggingTask( void * pvParameters )
 void vLogNoResourceAvailable( char * pcDepartmentName )
 {
     vMakeLogEntry( logERR_DEPT_N0_RESOURCE_AVAILABLE, 0, 0, pcDepartmentName );
-}
-/*-----------------------------------------------------------*/
-
-void vLogQueueSendError( char * pcQueueName )
-{
-    vMakeLogEntry( logERR_QUEUE_SEND, 0, 0, pcQueueName );
 }
 /*-----------------------------------------------------------*/
 
